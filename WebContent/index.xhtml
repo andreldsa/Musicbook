@@ -1,0 +1,40 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets" 
+	xmlns:p="http://primefaces.org/ui">
+	
+	<link rel="StyleSheet" type="text/css" href="layout/style.css" media="screen" />
+	<meta charset="utf-8"/>
+	
+	<ui:include src="#{main.getPage('header')}"/>
+	
+	<h:body styleClass="body">
+		<div id="wrapper">
+			<h:form>
+				<h:panelGrid rendered="#{not main.usuarioAutenticado()}" styleClass="login">
+						<h:outputText value="Seja Bem Vindo! Efetue login para iniciar."/>
+						<h:form>
+							<h:panelGrid columns="2" cellspacing="10">
+								<h:outputText value="Login:"/>
+								<p:inputText size="40" required="true" value="#{main.login}" validatorMessage="Login não digitado."/>
+								<h:outputText value="Senha:"/>
+								<p:password size="40" required="true" value="#{main.senha}" validatorMessage="Senha não digitada."/>
+							</h:panelGrid>
+							<h:commandButton styleClass="button" value="Entrar"
+								action="#{main.efetuaLogin()}"/>
+						</h:form>
+				</h:panelGrid>
+				<p:messages id="messages" showDetail="true" autoUpdate="true" closable="true"/>  
+			</h:form>
+			<h:panelGrid rendered="#{main.usuarioAutenticado()}">
+				<div id="welcome">
+					<h:outputText value="Olá #{main.sistema.usuarioLogado}!"/>
+				</div>
+			</h:panelGrid>
+		</div>
+
+	</h:body>
+
+	<ui:include src="#{main.getPage('footer')}" />
+	
+</html>
