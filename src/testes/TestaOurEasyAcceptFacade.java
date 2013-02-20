@@ -1,16 +1,11 @@
 package testes;
 
-import static org.junit.Assert.*;
-
 import org.junit.Before;
 import org.junit.Test;
-
-import br.com.sys.Sistema;
 
 import exceptions.EAfacade.AtributoInexistenteException;
 import exceptions.EAfacade.AtributoInvalidoException;
 import exceptions.system.SessaoInvalidaException;
-import exceptions.system.SolicitacaoInexistenteException;
 import exceptions.system.SolicitacaoInvalidaException;
 import exceptions.system.UsuarioInexistenteException;
 import exceptions.user.LoginInvalidoException;

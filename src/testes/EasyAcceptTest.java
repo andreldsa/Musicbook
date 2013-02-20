@@ -1,11 +1,9 @@
 package testes;
 
 import java.util.ArrayList;
-
 import java.util.List;
 
 import data.system.Sistema;
-
 import easyaccept.EasyAcceptFacade;
 
 public class EasyAcceptTest {

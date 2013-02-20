@@ -12,7 +12,6 @@ import data.system.Sistema;
 import exceptions.system.DataDeCriacaoInvalidaException;
 import exceptions.system.SessaoInexistenteException;
 import exceptions.system.SolicitacaoInexistenteException;
-import exceptions.system.SolicitacaoInvalidaException;
 import exceptions.system.SomInvalidoException;
 import exceptions.system.UsuarioInexistenteException;
 import exceptions.user.EmailJaExisteException;

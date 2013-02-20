@@ -1,8 +1,6 @@
 package testes;
 
-import static org.junit.Assert.*;
-
-import java.util.Date;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -10,11 +8,7 @@ import org.junit.Test;
 import data.user.Conta;
 import data.user.ContaBasica;
 import data.user.Usuario;
-import data.util.OurTime;
 import exceptions.user.EmailInvalidoException;
-import exceptions.user.EmailJaExisteException;
-import exceptions.user.LoginInvalidoException;
-import exceptions.user.LoginJaExisteException;
 import exceptions.user.NomeInvalidoException;
 
 public class TestaUsuario {

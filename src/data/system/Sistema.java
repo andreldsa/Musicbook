@@ -2,8 +2,6 @@ package data.system;
 
 import java.util.List;
 
-import data.util.OurTime;
-
 
 public class Sistema {
 
@@ -83,5 +81,17 @@ public class Sistema {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	/**
+	 * Retorna uma lista contendo os IDs dos sons do Usuario logado na Sessao passada
+	 * @param idSessao ID da Sessao do Usuario
+	 * @return Lista de IDs
+	 */
+	public List<Integer> getPerfilMusical(int idSessao){
+		// TODO Auto-generated method stub
+		return null;			
+	}
+	
+	
 
 }
