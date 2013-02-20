@@ -8,10 +8,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import data.util.OurTime;
-import exceptions.AnoInvalidoException;
-import exceptions.DiaInvalidoException;
-import exceptions.HorarioNaoInformadoException;
-import exceptions.MesInvalidoException;
+import exceptions.time.AnoInvalidoException;
+import exceptions.time.DiaInvalidoException;
+import exceptions.time.HorarioNaoInformadoException;
+import exceptions.time.MesInvalidoException;
 
 public class TestaOurTime {
 	OurTime data1,data2,data3;
@@ -24,40 +24,95 @@ public class TestaOurTime {
 		data3 = new OurTime();
 	}
 	
+	// Dia Invalido Tests
+	
 	@Test(expected = DiaInvalidoException.class)
-	public void testaDiaInvalido(){
-		data1 = new OurTime(32,5,2000);
+	public void testaDiaInvalido1(){
+		data1 = new OurTime(32,5,2000);	
+	}
+	
+	@Test(expected = DiaInvalidoException.class)
+	public void testaDiaInvalido2(){
 		data1 = new OurTime(32,5,2000,16,34,45);
-		
+	}
+	
+	@Test(expected = DiaInvalidoException.class)
+	public void testaDiaInvalido3(){
 		data1 = new OurTime(29,2,2015);
+	}
+	
+	@Test(expected = DiaInvalidoException.class)
+	public void testaDiaInvalido4(){
 		data1 = new OurTime(29,2,2015,16,34,45);
-		
+	}
+	
+	@Test(expected = DiaInvalidoException.class)
+	public void testaDiaInvalido5(){
 		data1 = new OurTime(31,4,2015);
+	}
+	
+	@Test(expected = DiaInvalidoException.class)
+	public void testaDiaInvalido6(){
 		data1 = new OurTime(31,4,2015,16,34,45);
 		
+	}
+	
+	@Test(expected = DiaInvalidoException.class)
+	public void testaDiaInvalido7(){
 		data1 = new OurTime(-1,2,2015);
+	}
+	
+	@Test(expected = DiaInvalidoException.class)
+	public void testaDiaInvalido8(){
 		data1 = new OurTime(-1,5,2015,16,34,45);
 	}
 	
+	 // Mes Invalido
+	
+	
 	@Test(expected = MesInvalidoException.class)
-	public void testaMesInvalido(){
+	public void testaMesInvalido1(){
 		data1 = new OurTime(12,30,2000);
+	}
+	
+	@Test(expected = MesInvalidoException.class)
+	public void testaMesInvalido2(){
 		data1 = new OurTime(12,30,2000,16,34,45);
-		
+	}
+	
+	@Test(expected = MesInvalidoException.class)
+	public void testaMesInvalido3(){
 		data1 = new OurTime(13,-1,2015);
+	}
+	
+	@Test(expected = MesInvalidoException.class)
+	public void testaMesInvalido4(){
 		data1 = new OurTime(13,-1,2015,16,34,45);
 	}
 	
+	// Ano Invalido
+	
 	@Test(expected = AnoInvalidoException.class)
-	public void testaAnoInvalido(){
+	public void testaAnoInvalido1(){
 		data1 = new OurTime(12,4,15);
+	}
+	
+	@Test(expected = AnoInvalidoException.class)
+	public void testaAnoInvalido2(){
 		data1 = new OurTime(12,4,12,16,34,45);
-		
+	}
+	
+	@Test(expected = AnoInvalidoException.class)
+	public void testaAnoInvalido3(){
 		data1 = new OurTime(13,4,11);
+	}
+
+	@Test(expected = AnoInvalidoException.class)
+	public void testaAnoInvalido4(){
 		data1 = new OurTime(13,4,12,16,34,45);
 	}
 	
-
+	
 	
 	@Test
 	public void testaDia() {

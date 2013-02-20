@@ -2,6 +2,8 @@ package testes;
 
 import java.util.List;
 
+import data.system.Sistema;
+
 public class OurEasyAcceptFacade {
 	
 	private final String NOME = "nome";
@@ -9,6 +11,10 @@ public class OurEasyAcceptFacade {
 	
 	private final String DATACRIACAO = "dataCriacao";
 	
+	public OurEasyAcceptFacade(Sistema sistema) {
+		// TODO Auto-generated constructor stub
+	}
+
 	public void zerarSistema(){
 		// TODO
 	}
@@ -47,6 +53,16 @@ public class OurEasyAcceptFacade {
 		}
 		
 		return null;
+	}
+
+	public int enviarSolicitacaoAmizade(String idSessao, String login) {
+		// TODO Auto-generated method stub
+		return -1;
+	}
+
+	public void aceitarSolicitacaoAmizade(String idSessao, String idSolicitacao) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 

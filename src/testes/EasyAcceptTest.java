@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import java.util.List;
 
+import data.system.Sistema;
+
 import easyaccept.EasyAcceptFacade;
 
 public class EasyAcceptTest {
@@ -26,7 +28,7 @@ public class EasyAcceptTest {
 
 		//Instantiate your software façade
 
-		OurEasyAcceptFacade yourTestFacade = new OurEasyAcceptFacade();
+		OurEasyAcceptFacade yourTestFacade = new OurEasyAcceptFacade(new Sistema());
 
 		//Instantiate EasyAccept façade
 

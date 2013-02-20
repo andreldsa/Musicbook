@@ -6,8 +6,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import data.user.ContaBasica;
-import exceptions.LoginJaExisteException;
-import exceptions.LoginInvalidoException;
+import exceptions.user.LoginInvalidoException;
+import exceptions.user.LoginJaExisteException;
 
 public class TestaContaBasica {
 	private ContaBasica conta1,conta2;
