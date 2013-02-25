@@ -1,35 +1,42 @@
 package data.user;
 
+import exceptions.user.LoginInvalidoException;
+import exceptions.user.NomeInvalidoException;
+
 
 public class ContaBasica implements Conta {
 
-	
+	private String login,senha;
 	/**
 	 * Construtor a partir de uma String que representa um numero e uma String que representa uma senha
-	 * @param nickname Nickname
+	 * @param login Nickname
 	 * @param senha Senha
+	 * @throws LoginInvalidoException 
 	 */
-	public ContaBasica(String nickname, String senha) {
-		// TODO Auto-generated constructor stub
+	public ContaBasica(String login, String senha) throws LoginInvalidoException {
+		if (login == null || login.isEmpty()) throw  new LoginInvalidoException("Login inválido");
+		this.login = login;
+		this.senha = senha;
 	}
 
 
 	@Override
 	public boolean autentica(Object senha) {
-		// TODO Auto-generated method stub
-		return false;
+		return this.senha.equals(senha);
 	}
 
 	@Override
 	public boolean alteraSenha(Object senha, Object novaSenha) {
-		// TODO Auto-generated method stub
+		if(autentica(senha)){
+			this.senha = (String)novaSenha;
+			return true;
+		}
 		return false;
 	}
 
 	@Override
 	public String getLogin() {
-		// TODO Auto-generated method stub
-		return null;
+		return login;
 	}
 
 }

@@ -1,8 +1,11 @@
 package data.util;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
 public class OurTime implements Comparable<OurTime> {
 
-
+private Calendar cal;
 	/**
 	 * Construtor a partir de um horario e uma data
 	 * @param dia 
@@ -13,13 +16,15 @@ public class OurTime implements Comparable<OurTime> {
 	 * @param segundo
 	 */
 	public OurTime(int dia, int mes, int ano, int hora, int minuto, int segundo) {
-		// TODO Auto-generated constructor stub
+		//TODO olha essa praga
+		this.cal = new GregorianCalendar(ano,mes,dia,hora,minuto,segundo);
+		
 	}
 	/**
 	 * Construtor a partir da hora e data atual
 	 */
 	public OurTime() {
-		// TODO Auto-generated constructor stub
+		this.cal = new GregorianCalendar();
 	}
 	/**
 	 * Construtor a partir de uma data
@@ -28,7 +33,7 @@ public class OurTime implements Comparable<OurTime> {
 	 * @param ano
 	 */
 	public OurTime(int dia, int mes, int ano) {
-		// TODO Auto-generated constructor stub
+		this.cal = new GregorianCalendar(ano, mes, dia);
 	}
 
 	/**
@@ -36,8 +41,10 @@ public class OurTime implements Comparable<OurTime> {
 	 * @return Horario Formatado
 	 */
 	public String getHorarioToString() {
-		// TODO Auto-generated method stub
-		return null;
+		String horario = cal.get(Calendar.HOUR) + ":" +
+				cal.get(Calendar.MINUTE) +":" +
+				cal.get(Calendar.SECOND); 
+		return horario;
 	}
 
 	/**
@@ -45,8 +52,10 @@ public class OurTime implements Comparable<OurTime> {
 	 * @return 
 	 */
 	public String getDataToString() {
-		// TODO Auto-generated method stub
-		return null;
+		String data = cal.get(Calendar.DAY_OF_MONTH) + ":" +
+				cal.get(Calendar.MONTH) +":" +
+				cal.get(Calendar.YEAR); 
+		return data;
 	}
 
 	/**
@@ -54,16 +63,14 @@ public class OurTime implements Comparable<OurTime> {
 	 * @return Segundo
 	 */
 	public int getSegundo() {
-		// TODO Auto-generated method stub
-		return -1;
+		return cal.get(Calendar.SECOND);
 	}
     /**
      * Retorna o minuto OurTime
      * @return Minuto
      */
 	public int getMinuto() {
-		// TODO Auto-generated method stub
-		return -1;
+		return cal.get(Calendar.MINUTE);
 	}
  
 	/**
@@ -71,8 +78,7 @@ public class OurTime implements Comparable<OurTime> {
 	 * @return Hora
 	 */
 	public int getHora() {
-		// TODO Auto-generated method stub
-		return -1;
+		return cal.get(Calendar.HOUR);
 	}
 
 	/**
@@ -80,8 +86,7 @@ public class OurTime implements Comparable<OurTime> {
 	 * @return Ano
 	 */
 	public int getAno() {
-		// TODO Auto-generated method stub
-		return -1;
+		return cal.get(Calendar.YEAR);
 	}
 
 	/**
@@ -89,8 +94,7 @@ public class OurTime implements Comparable<OurTime> {
 	 * @return Mes
 	 */
 	public int getMes() {
-		// TODO Auto-generated method stub
-		return -1;
+		return cal.get(Calendar.MONTH);
 	}
 
 	/**
@@ -98,14 +102,12 @@ public class OurTime implements Comparable<OurTime> {
 	 * @return Dia
 	 */
 	public int getDia() {
-		// TODO Auto-generated method stub
-		return -1;
+		return cal.get(Calendar.DAY_OF_MONTH);
 	}
 	
 	@Override
 	public int compareTo(OurTime o) {
-		// TODO Auto-generated method stub
-		return 0;
+		return (int)( cal.getTimeInMillis() - o.cal.getTimeInMillis());
 	}
 
 }

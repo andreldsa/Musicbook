@@ -1,15 +1,33 @@
 package data.user;
 
-public class Usuario {
+import java.util.List;
 
+import data.som.Som;
+
+import exceptions.user.EmailInvalidoException;
+import exceptions.user.EmailJaExisteException;
+import exceptions.user.LoginInvalidoException;
+import exceptions.user.LoginJaExisteException;
+import exceptions.user.NomeInvalidoException;
+
+public class Usuario {
+	private String nome, email;
+	private Conta conta;
+	private List<Som> sons;
+	
 	/**
 	 * Construtor a partir de um nome de usuario uma conta necessaria para se conectar ao site e sua data de aniversario
 	 * @param nome Nome do Usuario
 	 * @param contaUsuario Conta do Usuario contendo Nickname e Senha
 	 * @param dataAniversario Data de Aniversario do Usuario
 	 */
-	public Usuario(String nome, Conta contaUsuario, String email) {
-		// TODO Auto-generated constructor stub
+	public Usuario(String nome, Conta contaUsuario, String email)  throws EmailInvalidoException, 
+	 NomeInvalidoException{
+		if (nome == null || nome.isEmpty()) throw  new NomeInvalidoException("Nome inválido");
+		if (email == null || email.isEmpty()) throw  new EmailInvalidoException("Email inválido");
+		this.nome = nome;
+		this.email = email;
+		this.conta = contaUsuario;
 	}
 
 	/**
@@ -17,8 +35,7 @@ public class Usuario {
 	 * @return Nome
 	 */
 	public String getNome() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.nome;
 	}
 
 	/**
@@ -26,8 +43,7 @@ public class Usuario {
 	 * @return Login
 	 */
 	public String getLogin() {
-		// TODO Auto-generated method stub
-		return null;
+		return conta.getLogin();
 	}
 
 	/**
@@ -35,8 +51,7 @@ public class Usuario {
 	 * @return Email
 	 */
 	public String getEmail() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.email;
 	}
 
 
