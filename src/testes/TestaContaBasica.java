@@ -14,13 +14,13 @@ public class TestaContaBasica {
 	private ContaBasica conta1,conta2;
 
 	@Before
-	public void setUp(){
+	public void setUp() throws LoginInvalidoException{
 		conta1 = new ContaBasica("login1", "senha1");
 		conta2 = new ContaBasica("login2", "senha_2");
 	}
 	
 	@Test(expected = LoginInvalidoException.class)
-	public void testaUsuarioInvalidoException(){
+	public void testaUsuarioInvalidoException() throws LoginInvalidoException{
 		conta1 = new ContaBasica("", "senha");
 		conta1 = new ContaBasica(null, "senha");
 		assertFalse(conta1.autentica(null));

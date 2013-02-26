@@ -1,5 +1,8 @@
-package br.com.sys;
+package gui;
 
+/**
+ * Enum com constantes para a url das paginas.
+ */
 public enum Pages {
 	
 	INDEX ("/index.xhtml"),

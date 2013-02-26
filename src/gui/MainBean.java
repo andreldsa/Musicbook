@@ -1,36 +1,33 @@
-package br.com.sys.beans;
+package gui;
 
 import java.io.IOException;
 import java.io.Serializable;
 
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
-import br.com.sys.Pages;
-import br.com.sys.Sistema;
-import br.com.sys.exceptions.ErroDeAutenticacaoException;
-import br.com.sys.exceptions.UsuarioNaoCadastradoException;
+import data.system.Sistema;
 
+/**
+ * Classe que representa as acoes da pagina inicial.
+ */
 @ManagedBean(name="main")
 @SessionScoped
 public class MainBean implements Serializable{
 	
 	private static final long serialVersionUID = 6686329191099618764L;
 	
-	private String sysName = "Authentication System";;
+	private String sysName = "MusicBook";
 	private Sistema sistema = new Sistema();
+	private int ID_Sessao = -1;
 	
 	private String login;
 	private String senha;
 	
-	private String erro;
-	private boolean errorHasOccurred;
-	
 	public MainBean() {
-		getExternalContext().getApplicationMap().put("main", this);
+		getExternalContext().getApplicationMap().put("main", this); // Seta o objeto no contexto da aplicacao.
 	}
 	
 	/**
@@ -53,14 +50,6 @@ public class MainBean implements Serializable{
 		return Pages.HOME.getUrl();
 	}
 	
-	/**
-	 * Retorna a página de novo Cadastro de Produto.
-	 * @return String Pages.CAD_PRODUTO
-	 */
-	public String cadastroProduto() {
-		return Pages.CAD_PRODUTO.getUrl();
-	}
-
 	public String getLogin() {
 		return login;
 	}
@@ -80,40 +69,17 @@ public class MainBean implements Serializable{
 	/**
 	 * Efetua login no sistema a partir de um Login e Senha.	
 	 * @return String Pages.HOME ou UsuarioNaoCadastradoException
-	 * caso o usuario inválido ou ErroDeAutenticacaoException caso
+	 * caso o usuario invalido ou ErroDeAutenticacaoException caso
 	 * a senha esteja incorreta.
 	 */
 	public String efetuaLogin() {
-		try {
-			sistema.efetuaLogin(login, senha);
-			resetExceptions();
+		ID_Sessao  = sistema.abrirSessao(login, senha);
+		if (ID_Sessao != -1) {
 			return Pages.HOME.getUrl();
-		} catch (UsuarioNaoCadastradoException e) {
-			FacesContext.getCurrentInstance().addMessage(
-					null, new FacesMessage(FacesMessage.SEVERITY_ERROR,UsuarioNaoCadastradoException.MENSAGEM, 
-							""));
-		} catch (ErroDeAutenticacaoException e) {
-			FacesContext.getCurrentInstance().addMessage(
-					null, new FacesMessage(FacesMessage.SEVERITY_ERROR,ErroDeAutenticacaoException.MENSAGEM, 
-							""));
 		}
 		return "";
 	}
 	
-	private void resetExceptions() {
-		setErro("");
-		setErrorHasOccurred(false);
-	}
-	
-	public String getErro() {
-		return erro;
-	}
-
-	public void setErro(String erro) {
-		setErrorHasOccurred(true);
-		this.erro = erro;
-	}
-
 	public Sistema getSistema() {
 		return sistema;
 	}
@@ -123,35 +89,28 @@ public class MainBean implements Serializable{
 	}
 
 	/**
-	 * Verifica se existe um usuário autenticado no sistema.
+	 * Verifica se existe um usuario autenticado no sistema.
 	 * @return True or False
 	 * @throws IOException
 	 */
 	public boolean usuarioAutenticado() throws IOException {
-		if(sistema.getUsuarioLogado() == null)
+		if(ID_Sessao == -1) {
 			return false;
+		}
 		return true;
 	}
 
-	public boolean isErrorHasOccurred() {
-		return errorHasOccurred;
-	}
-
-	public void setErrorHasOccurred(boolean errorHasOccurred) {
-		this.errorHasOccurred = errorHasOccurred;
-	}
-
 	/**
-	 * Encerra a autenticação do usuário que está logado no sistema.
+	 * Encerra a autenticacao do usuario que esta� logado no sistema.
 	 * @return String Pages.INDEX
 	 */
 	public String logout() {
-		sistema.logout();
+		sistema.encerraSessao(ID_Sessao);
 		return Pages.INDEX.getUrl();
 	}
 	
 	/**
-	 * Acessa o banco de páginas e retorna a url.
+	 * Acessa o banco de paginas e retorna a url.
 	 * @param name
 	 * @return String url
 	 */

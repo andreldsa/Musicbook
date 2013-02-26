@@ -1,4 +1,4 @@
-package br.com.sys.Filters;
+package filters;
 
 import java.io.IOException;
 
@@ -12,7 +12,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import br.com.sys.beans.MainBean;
 
 public class AuthenticationFilter implements Filter{
 	
@@ -28,11 +27,11 @@ public class AuthenticationFilter implements Filter{
 			FilterChain chain) throws IOException, ServletException {
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		
-		MainBean main = (MainBean) context.getAttribute("main");
-		if(main.usuarioAutenticado()) {
-			chain.doFilter(request, response);
-			return;
-		}
+//		MainBean main = (MainBean) context.getAttribute("main");
+//		if(main.usuarioAutenticado()) {
+//			chain.doFilter(request, response);
+//			return;
+//		}
 		
 		HttpServletResponse httpResponse = (HttpServletResponse) response;
 		httpResponse.sendRedirect(httpRequest.getContextPath());
