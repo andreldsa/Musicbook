@@ -11,5 +11,18 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="C:/Users/Lurian/Dropbox/Eclipse JEE/repositorio local/NovoProjetoSi1/lib/easyaccept.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Lurian/Dropbox/Eclipse JEE/repositorio local/NovoProjetoSi1/WebContent/WEB-INF/lib/weld-osgi-bundle.jar"/>
+	<classpathentry kind="lib" path="lib/activation-1.1.jar"/>
+	<classpathentry kind="lib" path="lib/commons-lang-2.2.jar"/>
+	<classpathentry kind="lib" path="lib/commons-logging-1.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/facebook-java-api-3.0.2.jar"/>
+	<classpathentry kind="lib" path="lib/facebook-java-api-annotation-processor-3.0.2.jar"/>
+	<classpathentry kind="lib" path="lib/facebook-java-api-schema-3.0.2.jar"/>
+	<classpathentry kind="lib" path="lib/javax.servlet-5.1.12.jar"/>
+	<classpathentry kind="lib" path="lib/jaxb-api-2.1.jar"/>
+	<classpathentry kind="lib" path="lib/jaxb-impl-2.1.9.jar"/>
+	<classpathentry kind="lib" path="lib/json-20080701.jar"/>
+	<classpathentry kind="lib" path="lib/org.hamcrest.core_1.1.0.v20090501071000.jar"/>
+	<classpathentry kind="lib" path="lib/runtime-0.4.1.5.jar"/>
+	<classpathentry kind="lib" path="lib/stax-api-1.0-2.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
