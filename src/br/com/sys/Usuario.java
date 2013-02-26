@@ -15,7 +15,7 @@ public class Usuario implements Serializable{
 	}
 
 	public String getSenha() {
-		return null;
+		return senha;
 	}
 
 	public void setSenha(String senha) {

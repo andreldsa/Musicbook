@@ -1,10 +1,25 @@
 package data.system;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+
+import data.user.Usuario;
 
 
 public class Sistema {
-
+	private Usuario currentUser;
+	private Map<String,Usuario> usuarios;
+	private int currentSession;
+	private int sessionCounter;
+	
+	public Sistema(){
+		this.usuarios = new HashMap<String, Usuario>();
+		this.currentSession = -1;
+		this.sessionCounter = 0;
+	}
 	
 	/**
 	 * Construtor a partir dos dados enviados da interface
@@ -25,9 +40,19 @@ public class Sistema {
 	 * @return ID da sessão
 	 */
 	public int abrirSessao(String login, String senha){
-		
-		// TODO Auto-generated method stub
+		Usuario user = usuarios.get(login);
+		if(user.getConta().autentica(senha)){
+		int newSessionId = generateNewSessionId();
+		this.currentSession = newSessionId;
+		this.currentUser = user;
+		return newSessionId;
+		}
+		this.currentSession = -1;
 		return -1;
+	}
+
+	private int generateNewSessionId() {
+		return sessionCounter++;
 	}
 
 	/**
@@ -78,8 +103,7 @@ public class Sistema {
 	 * @return Lista de IDs 
 	 */
 	public List<Integer> getFonteDeSons(int idSessao) {
-		// TODO Auto-generated method stub
-		return null;
+		return currentUser.getFontesDeSons();
 	}
 	
 	/**

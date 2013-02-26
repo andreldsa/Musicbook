@@ -1,5 +1,8 @@
 package data.user;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import exceptions.user.EmailInvalidoException;
 import exceptions.user.NomeInvalidoException;
 
@@ -7,6 +10,8 @@ public class Usuario {
 	private String nome;
 	private Conta conta;
 	private String email;
+	private List<Integer> solicitacoesDeAmizade;
+	private List<Integer> fontesDeSons;
 
 
 	/**
@@ -29,6 +34,8 @@ public class Usuario {
 			this.nome = nome;
 		}
 		this.email = email;
+		this.solicitacoesDeAmizade = new ArrayList<Integer>();
+		this.fontesDeSons = new ArrayList<Integer>();
 	}
 
 	/**
@@ -55,6 +62,24 @@ public class Usuario {
 		return this.email;
 	}
 
+	public void addFonteDeSom(int IdFonte){
+		getFontesDeSons().add(IdFonte);
+	}
+	
+	public void addSolicitacaoDeAmizade(int solicitacaoId){
+		getSolicitacoesDeAmizade().add(solicitacaoId);
+	}
 
+	public List<Integer> getSolicitacoesDeAmizade() {
+		return solicitacoesDeAmizade;
+	}
+
+	public List<Integer> getFontesDeSons() {
+		return fontesDeSons;
+	}
+	
+	public Conta getConta(){
+		return conta;
+	}
 
 }
