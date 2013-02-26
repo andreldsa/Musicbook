@@ -41,11 +41,11 @@ public class Sistema {
 	 */
 	public int abrirSessao(String login, String senha){
 		Usuario user = usuarios.get(login);
-		if(user.getConta().autentica(senha)){
-		int newSessionId = generateNewSessionId();
-		this.currentSession = newSessionId;
-		this.currentUser = user;
-		return newSessionId;
+		if (user.getConta().autentica(senha)) {
+			int newSessionId = generateNewSessionId();
+			this.currentSession = newSessionId;
+			this.currentUser = user;
+			return newSessionId;
 		}
 		this.currentSession = -1;
 		return -1;
@@ -114,6 +114,14 @@ public class Sistema {
 	public List<Integer> getPerfilMusical(int idSessao){
 		// TODO Auto-generated method stub
 		return null;			
+	}
+
+	/**
+	 * Encerra a sessao com o ID passado como parametro.
+	 * @param iD_Sessao da sessao a ser encerrada
+	 */
+	public void encerraSessao(int iD_Sessao) {
+		// TODO Auto-generated method stub
 	}
 	
 	
