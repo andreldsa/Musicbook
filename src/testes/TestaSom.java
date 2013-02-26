@@ -8,6 +8,8 @@ import org.junit.Test;
 import data.som.Som;
 import data.util.OurTime;
 import exceptions.system.SomInvalidoException;
+import exceptions.time.DiaInvalidoException;
+import exceptions.time.MesInvalidoException;
 
 public class TestaSom {
 	
@@ -15,7 +17,7 @@ public class TestaSom {
 	private OurTime data;
 
 	@Before
-	public void setUp(){
+	public void setUp() throws DiaInvalidoException, MesInvalidoException{
 		data = new OurTime(14,8,2014);
 		som = new Som("http://www.youtube.com/watch?v=r-fIOrUTIOQ", data);
 	}

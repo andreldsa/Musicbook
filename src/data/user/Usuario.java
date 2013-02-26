@@ -1,33 +1,34 @@
 package data.user;
 
-import java.util.List;
-
-import data.som.Som;
-
 import exceptions.user.EmailInvalidoException;
-import exceptions.user.EmailJaExisteException;
-import exceptions.user.LoginInvalidoException;
-import exceptions.user.LoginJaExisteException;
 import exceptions.user.NomeInvalidoException;
 
 public class Usuario {
-	private String nome, email;
+	private String nome;
 	private Conta conta;
-	private List<Som> sons;
-	
+	private String email;
+
+
 	/**
 	 * Construtor a partir de um nome de usuario uma conta necessaria para se conectar ao site e sua data de aniversario
 	 * @param nome Nome do Usuario
 	 * @param contaUsuario Conta do Usuario contendo Nickname e Senha
 	 * @param dataAniversario Data de Aniversario do Usuario
+	 * @throws EmailInvalidoException 
 	 */
-	public Usuario(String nome, Conta contaUsuario, String email)  throws EmailInvalidoException, 
-	 NomeInvalidoException{
-		if (nome == null || nome.isEmpty()) throw  new NomeInvalidoException("Nome inválido");
-		if (email == null || email.isEmpty()) throw  new EmailInvalidoException("Email inválido");
-		this.nome = nome;
-		this.email = email;
+	public Usuario(String nome, Conta contaUsuario, String email) throws NomeInvalidoException, EmailInvalidoException {
+		if (nome == null || nome.isEmpty()) {
+			throw new NomeInvalidoException("Nome inválido");
+		} else {
+			this.nome = nome;
+		}
 		this.conta = contaUsuario;
+		if (email == null || email.isEmpty()) {
+			throw new EmailInvalidoException("Email inválido");
+		} else {
+			this.nome = nome;
+		}
+		this.email = email;
 	}
 
 	/**
@@ -43,7 +44,7 @@ public class Usuario {
 	 * @return Login
 	 */
 	public String getLogin() {
-		return conta.getLogin();
+		return this.conta.getLogin();
 	}
 
 	/**
