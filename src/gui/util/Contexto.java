@@ -1,9 +1,9 @@
-package util;
+package gui.util;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
-public class Utils {
+public class Contexto {
 
 	private static ExternalContext getExternalContext() {
 		return FacesContext.getCurrentInstance().getExternalContext();

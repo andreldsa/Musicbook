@@ -1,11 +1,12 @@
 package gui;
 
+import gui.util.Contexto;
+
 import java.io.IOException;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
-import util.Utils;
 import data.system.Sistema;
 
 @ManagedBean(name="login")
@@ -18,7 +19,7 @@ public class LoginBean {
 	private String senha;
 	
 	public LoginBean() {
-		sistema = (Sistema) Utils.getInContext("sistema");
+		sistema = (Sistema) Contexto.getInContext("sistema");
 		System.out.println("Sistema recuperado...");
 		System.out.println("Login bean construido....");
 	}

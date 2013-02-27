@@ -1,11 +1,12 @@
 package gui;
 
+import gui.util.Contexto;
+
 import java.io.Serializable;
 
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
 
-import util.Utils;
 import data.system.Sistema;
 
 /**
@@ -23,7 +24,7 @@ public class MainBean implements Serializable{
 	public MainBean() {
 		setSistema(new Sistema());
 		System.out.println("Sistema inicializado....");
-		Utils.insertInContext(sistema, "sistema"); // Seta o objeto no contexto da aplicacao.
+		Contexto.insertInContext(sistema, "sistema"); // Seta o objeto no contexto da aplicacao.
 	}
 	
 	public String getSysName() {
