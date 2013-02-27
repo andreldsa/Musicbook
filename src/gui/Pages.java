@@ -6,10 +6,10 @@ package gui;
 public enum Pages {
 	
 	INDEX ("/index.xhtml"),
-	HOME ("/view/home.xhtml"),
-	HEADER ("/view/header.xhtml"),
-	FOOTER ("/view/footer.xhtml"),
-	MENU ("/view/menu.xhtml"),
+	HOME ("/layout/home.xhtml"),
+	HEADER ("/layout/header.xhtml"),
+	FOOTER ("/layout/footer.xhtml"),
+	MENU ("/layout/menu.xhtml"),
 	
 	/* ---- Páginas dos Módulos ----*/
 	CAD_PRODUTO ("/view/cadastroproduto.xhtml");

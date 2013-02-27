@@ -41,6 +41,9 @@ public class Sistema {
 	 */
 	public int abrirSessao(String login, String senha){
 		Usuario user = usuarios.get(login);
+		if (user == null) {
+			return -1;
+		}
 		if (user.getConta().autentica(senha)) {
 			int newSessionId = generateNewSessionId();
 			this.currentSession = newSessionId;

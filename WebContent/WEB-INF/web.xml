@@ -17,12 +17,5 @@
 		<url-pattern>/faces/*</url-pattern>
 	</servlet-mapping>
 	
-	<filter>
-		<filter-name>AuthenticationFilter</filter-name>
-		<filter-class>br.com.sys.Filters.AuthenticationFilter</filter-class>
-	</filter>
-	<filter-mapping>
-		<filter-name>AuthenticationFilter</filter-name>
-		<url-pattern>/faces/pages/*</url-pattern>
-	</filter-mapping>
+
 </web-app>
