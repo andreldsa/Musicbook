@@ -6,6 +6,7 @@ public class Som implements Comparable<Som> {
 	
 	private String link;
 	private OurTime dataDeCriacao;
+	private int ID;
 	/**
 	 * Contrutor a partir de um link e a data de criacao informada
 	 * @param link Link
@@ -14,6 +15,16 @@ public class Som implements Comparable<Som> {
 	public Som(String link, OurTime dataCriacao)  {
 		this.link = link;
 		this.dataDeCriacao = dataCriacao;
+	}
+	
+	/**
+	 * Contrutor a partir de um link e a data de criacao informada
+	 * @param link Link
+	 * @param dataCriacao Data de Criacao
+	 */
+	public Som(String link, OurTime dataCriacao , int ID)  {
+		this(link, dataCriacao);
+		this.ID = ID;
 	}
 
 	/**
@@ -35,6 +46,10 @@ public class Som implements Comparable<Som> {
 	@Override
 	public int compareTo(Som o) {
 		return dataDeCriacao.compareTo(o.dataDeCriacao);
+	}
+
+	public int getID() {
+		return ID;
 	}
 
 }

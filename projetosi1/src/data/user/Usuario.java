@@ -1,7 +1,11 @@
 package data.user;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import data.som.Som;
 
 import exceptions.user.EmailInvalidoException;
 import exceptions.user.NomeInvalidoException;
@@ -10,8 +14,10 @@ public class Usuario {
 	private String nome;
 	private Conta conta;
 	private String email;
-	private List<Integer> solicitacoesDeAmizade;
 	private List<Integer> fontesDeSons;
+	private Map<Integer,Som> sons;
+	private int ID;
+	private List<Integer> perfilMusical;
 
 
 	/**
@@ -34,8 +40,23 @@ public class Usuario {
 			this.nome = nome;
 		}
 		this.email = email;
-		this.solicitacoesDeAmizade = new ArrayList<Integer>();
 		this.fontesDeSons = new ArrayList<Integer>();
+		this.perfilMusical = new ArrayList<Integer>();
+		this.sons = new HashMap<Integer, Som>();
+		this.ID = 0;
+	}
+	/**
+	 * 
+	 * @param nome nome do usuario
+	 * @param contaUsuario conta do usuario
+	 * @param email email do usuario
+	 * @param ID ID do usuario
+	 * @throws NomeInvalidoException
+	 * @throws EmailInvalidoException
+	 */
+	public Usuario(String nome, Conta contaUsuario, String email, int ID) throws NomeInvalidoException, EmailInvalidoException{
+		this(nome, contaUsuario, email);
+		this.ID = ID;
 	}
 
 	/**
@@ -65,14 +86,6 @@ public class Usuario {
 	public void addFonteDeSom(int IdFonte){
 		getFontesDeSons().add(IdFonte);
 	}
-	
-	public void addSolicitacaoDeAmizade(int solicitacaoId){
-		getSolicitacoesDeAmizade().add(solicitacaoId);
-	}
-
-	public List<Integer> getSolicitacoesDeAmizade() {
-		return solicitacoesDeAmizade;
-	}
 
 	public List<Integer> getFontesDeSons() {
 		return fontesDeSons;
@@ -81,5 +94,39 @@ public class Usuario {
 	public Conta getConta(){
 		return conta;
 	}
+	
+	public boolean autenticaConta(Object senha){
+		return getConta().autentica(senha);
+	}
+	public int getID() {
+		return ID;
+	}
+	public void postaSom(Som som){
+		sons.put(som.getID(), som);
+		perfilMusical.add(som.getID());
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof Usuario))
+			return false;
+		Usuario other = (Usuario) obj;
+		if (ID != other.ID)
+			return false;
+		if (email == null) {
+			if (other.email != null)
+				return false;
+		} else if (!email.equals(other.email))
+			return false;
+		return true;
+	}
+	public List<Integer> getPerfilMusical() {
+		return perfilMusical;
+	}
+	
 
 }
