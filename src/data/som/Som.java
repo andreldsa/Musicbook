@@ -1,7 +1,6 @@
 package data.som;
 
 import data.util.OurTime;
-import exceptions.system.SomInvalidoException;
 
 public class Som implements Comparable<Som> {
 	
@@ -13,9 +12,7 @@ public class Som implements Comparable<Som> {
 	 * @param link Link
 	 * @param dataCriacao Data de Criacao
 	 */
-	public Som(String link, OurTime dataCriacao) throws SomInvalidoException {
-		if(!link.startsWith("http://"))
-			throw new SomInvalidoException("Som inválido");
+	public Som(String link, OurTime dataCriacao)  {
 		this.link = link;
 		this.dataDeCriacao = dataCriacao;
 	}
@@ -24,9 +21,8 @@ public class Som implements Comparable<Som> {
 	 * Contrutor a partir de um link e a data de criacao informada
 	 * @param link Link
 	 * @param dataCriacao Data de Criacao
-	 * @throws SomInvalidoException 
 	 */
-	public Som(String link, OurTime dataCriacao , int ID) throws SomInvalidoException  {
+	public Som(String link, OurTime dataCriacao , int ID)  {
 		this(link, dataCriacao);
 		this.ID = ID;
 	}
