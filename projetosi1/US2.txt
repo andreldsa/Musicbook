@@ -1,0 +1,110 @@
+# User Story 02 - Fazendo amigos e visualizando fonte de sons
+
+# Usuario envia solicitação de amizade para outro usuário
+# cadastrado e se esse último aceitar, ele entra na fonte de sons
+# do primeiro. Assim como o primeiro entra na fonte de sons do segundo.
+# A ordem em que os usuarios aparecem na fonte de sons deve obedecer a
+# ordem de chegada como em uma fila comum.
+
+# limpar os dados do sistema
+zerarSistema
+
+# entradas válidas
+
+criarUsuario login="mark" senha="m@rk" nome="Mark Zuckerberg" email="mark@facebook.com"
+criarUsuario login="steve" senha="5t3v3" nome="Steven Paul Jobs" email="jobs@apple.com"
+criarUsuario login="bill" senha="severino" nome="William Henry Gates III" email="billzin@msn.com"
+
+# o método 'abrirSessao' retorna o ID da sessão
+sessaoMark=abrirSessao login="mark" senha="m@rk"
+sessaoSteve=abrirSessao login="steve" senha="5t3v3"
+sessaoBill=abrirSessao login="bill" senha="severino"
+
+# o metodo getIDUsuario retorna o id do usuario no sistema
+IDSteve=getIDUsuario idSessao=${sessaoSteve}
+IDMark=getIDUsuario idSessao=${sessaoMark}
+IDBill=getIDUsuario idSessao=${sessaoBill}
+
+# verifica perfil musical
+expect {} getPerfilMusical idSessao=${sessaoMark}
+expect {} getPerfilMusical idSessao=${sessaoSteve}
+expect {} getPerfilMusical idSessao=${sessaoBill}
+
+# Mark posta sons
+som1ID=postarSom idSessao=${sessaoMark} link="http://letras.mus.br/david-guetta/#mais-acessadas/1944260" dataCriacao="30/12/2013"
+som2ID=postarSom idSessao=${sessaoMark} link="https://letras.mus.br/david-guetta/#mais-acessadas/2150148" dataCriacao="31/12/2013"
+
+# Steve posta sons
+som3ID=postarSom idSessao=${sessaoSteve} link="http://www.youtube.com/watch?v=3KsPIJK17uk" dataCriacao="01/01/2014"
+som4ID=postarSom idSessao=${sessaoSteve} link="https://www.youtube.com/watch?v=JRfuAukYTKg" dataCriacao="31/12/2015"
+som5ID=postarSom idSessao=${sessaoSteve} link="http://www.youtube.com/watch?v=PVzljDmoPVs" dataCriacao="04/02/2016"
+
+expect {${som1ID},${som2ID}} getPerfilMusical idSessao=${sessaoMark}
+expect {${som3ID},${som4ID},${som5ID}} getPerfilMusical idSessao=${sessaoSteve}
+
+# -----------------------------------------------------------------------------------------------------------------------------------------------
+
+# Bill envia solicitação de amizade para Steve
+solicitacao1ID=enviarSolicitacaoAmizade idSessao=${sessaoBill} login="steve"
+
+# Steve aceita solicitação de amizade de Bill
+aceitarSolicitacaoAmizade idSessao=${sessaoSteve} idSolicitacao=${solicitacao1ID}
+
+# Os perfis de ambos estao inalterados
+expect {} getPerfilMusical idSessao=${sessaoBill}
+expect {${som3ID},${som4ID},${som5ID}} getPerfilMusical idSessao=${sessaoSteve}
+
+# Bill agora esta na fonte de sons de Steve
+# e Steve esta na fonte de sons de Bill
+expect {${IDSteve}} getFontesDeSons idSessao=${sessaoBill}
+expect {${IDBill}} getFontesDeSons idSessao=${sessaoSteve}
+
+# -----------------------------------------------------------------------------------------------------------------------------------------------
+
+# Steve envia solicitação de amizade para Mark
+solicitacao2ID=enviarSolicitacaoAmizade idSessao=${sessaoSteve} login="mark"
+
+# Mark aceita a solicitação de amizade de Steve
+aceitarSolicitacaoAmizade idSessao=${sessaoMark} idSolicitacao=${solicitacao2ID}
+
+# os perfis musicais de mark e steve ficam inalterados
+expect {${som1ID},${som2ID}} getPerfilMusical idSessao=${sessaoMark}
+expect {${som3ID},${som4ID},${som5ID}} getPerfilMusical idSessao=${sessaoSteve}
+
+# Mark e Steve estao na fonte de sons um do outro
+expect {${IDSteve}} getFontesDeSons idSessao=${sessaoMark}
+expect {${IDBill},${IDMark}} getFontesDeSons idSessao=${sessaoSteve}
+
+#Encerrar a sessao de Bill
+encerrarSessao login="bill"
+
+# -----------------------------------------------------------------------------------------------------------------------------------------------
+
+# entradas inválidas
+
+expectError "Sessão inválida" enviarSolicitacaoAmizade idSessao= login="steve"
+expectError "Sessão inválida" enviarSolicitacaoAmizade idSessao="" login="steve"
+expectError "Login inválido" enviarSolicitacaoAmizade idSessao=${sessaoSteve} login=
+expectError "Login inválido" enviarSolicitacaoAmizade idSessao=${sessaoSteve} login=""
+
+expectError "Sessão inválida" aceitarSolicitacaoAmizade idSessao= idSolicitacao=${solicitacao1ID}
+expectError "Sessão inválida" aceitarSolicitacaoAmizade idSessao="" idSolicitacao=${solicitacao1ID}
+expectError "Sessão inexistente" aceitarSolicitacaoAmizade idSessao=${sessaoBill} idSolicitacao=${solicitacao1ID}
+expectError "Solicitação inválida" aceitarSolicitacaoAmizade idSessao=${sessaoSteve} idSolicitacao=
+expectError "Solicitação inválida" aceitarSolicitacaoAmizade idSessao=${sessaoSteve} idSolicitacao=""
+expectError "Solicitação inexistente" aceitarSolicitacaoAmizade idSessao=${sessaoSteve} idSolicitacao=${solicitacao1ID}
+expectError "Solicitação inexistente" aceitarSolicitacaoAmizade idSessao=${sessaoMark} idSolicitacao=${solicitacao2ID}
+
+expectError "Som inválido" postarSom idSessao=${sessaoSteve} link= dataCriacao="99/99/9999"
+expectError "Som inválido" postarSom idSessao=${sessaoSteve} link="" dataCriacao="00/00/0000"
+expectError "Som inválido" postarSom idSessao=${sessaoSteve} link="www.youtube.com/watch?v=3KsPIJK17uk" dataCriacao="01/01/2014"
+expectError "Som inválido" postarSom idSessao=${sessaoSteve} link="ftp://www.youtube.com/watch?v=3KsPIJK17uk" dataCriacao="01/01/2014"
+
+#Encerrar a sessao de Mark
+encerrarSessao login="mark"
+
+#Encerrar a sessao de Steve
+encerrarSessao login="steve"
+
+encerrarSistema
+quit
