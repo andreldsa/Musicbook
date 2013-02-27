@@ -3,6 +3,7 @@ package data.util;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import exceptions.time.AnoInvalidoException;
 import exceptions.time.DiaInvalidoException;
 import exceptions.time.MesInvalidoException;
 
@@ -22,10 +23,13 @@ private Calendar cal;
 	 */
 	public OurTime(int dia, int mes, int ano, int hora, int minuto, int segundo) throws DiaInvalidoException, MesInvalidoException {
 		if(dia < 0 || (mes30(mes) && dia > 30) || (!mes30(mes) && dia > 31) || ( mes == 2 && ehBissexto(ano) && dia > 29 ) || ( mes == 2 && !ehBissexto(ano) && dia > 28 ))
-			throw new DiaInvalidoException();
+			throw new DiaInvalidoException("Data de Criação inválida");
 		
 		if(mes < 0 || mes > 12)
-			throw new MesInvalidoException();
+			throw new MesInvalidoException("Data de Criação inválida");
+		
+//		if(ano)
+//		throw new AnoInvalidoException("Data inválida");
 		this.cal = new GregorianCalendar(ano,mes,dia,hora,minuto,segundo);
 		
 	}
@@ -43,12 +47,16 @@ private Calendar cal;
 	 * @throws DiaInvalidoException 
 	 * @throws MesInvalidoException 
 	 */
-	public OurTime(int dia, int mes, int ano) throws DiaInvalidoException, MesInvalidoException {
+	@SuppressWarnings("deprecation")
+	public OurTime(int dia, int mes, int ano) throws DiaInvalidoException, MesInvalidoException,AnoInvalidoException {
 		if(dia < 0 || (mes30(mes) && dia > 30) || (!mes30(mes) && dia > 31) || ( mes == 2 && ehBissexto(ano) && dia > 29 ) || ( mes == 2 && !ehBissexto(ano) && dia > 28 ))
-			throw new DiaInvalidoException();
+			throw new DiaInvalidoException("Data de Criação inválida");
 		
 		if(mes < 0 || mes > 12)
-			throw new MesInvalidoException();
+			throw new MesInvalidoException("Data de Criação inválida");
+		
+//		if(ano)
+//			throw new AnoInvalidoException("Data inválida");
 		this.cal = new GregorianCalendar(ano, mes, dia);
 	}
 
@@ -89,7 +97,7 @@ private Calendar cal;
 	 * @return Hora
 	 */
 	public int getHora() {
-		return cal.get(Calendar.HOUR);
+		return cal.get(Calendar.HOUR_OF_DAY);
 	}
 
 	/**

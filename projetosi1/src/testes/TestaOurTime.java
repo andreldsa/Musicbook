@@ -18,7 +18,7 @@ public class TestaOurTime {
 	
 	
 	@Before
-	public void setUp() throws DiaInvalidoException, MesInvalidoException{
+	public void setUp() throws DiaInvalidoException, MesInvalidoException, AnoInvalidoException{
 		data1 = new OurTime(20,5,1982);
 		data2 = new OurTime(25,3,1995,18,20,45);
 		data3 = new OurTime();
@@ -27,7 +27,7 @@ public class TestaOurTime {
 	// Dia Invalido Tests
 	
 	@Test(expected = DiaInvalidoException.class)
-	public void testaDiaInvalido1() throws DiaInvalidoException, MesInvalidoException{
+	public void testaDiaInvalido1() throws DiaInvalidoException, MesInvalidoException, AnoInvalidoException{
 		data1 = new OurTime(32,5,2000);	
 	}
 	
@@ -37,7 +37,7 @@ public class TestaOurTime {
 	}
 	
 	@Test(expected = DiaInvalidoException.class)
-	public void testaDiaInvalido3() throws DiaInvalidoException, MesInvalidoException{
+	public void testaDiaInvalido3() throws DiaInvalidoException, MesInvalidoException, AnoInvalidoException{
 		data1 = new OurTime(29,2,2015);
 	}
 	
@@ -47,7 +47,7 @@ public class TestaOurTime {
 	}
 	
 	@Test(expected = DiaInvalidoException.class)
-	public void testaDiaInvalido5() throws DiaInvalidoException, MesInvalidoException{
+	public void testaDiaInvalido5() throws DiaInvalidoException, MesInvalidoException, AnoInvalidoException{
 		data1 = new OurTime(31,4,2015);
 	}
 	
@@ -58,7 +58,7 @@ public class TestaOurTime {
 	}
 	
 	@Test(expected = DiaInvalidoException.class)
-	public void testaDiaInvalido7() throws DiaInvalidoException, MesInvalidoException{
+	public void testaDiaInvalido7() throws DiaInvalidoException, MesInvalidoException, AnoInvalidoException{
 		data1 = new OurTime(-1,2,2015);
 	}
 	
@@ -71,7 +71,7 @@ public class TestaOurTime {
 	
 	
 	@Test(expected = MesInvalidoException.class)
-	public void testaMesInvalido1() throws DiaInvalidoException, MesInvalidoException{
+	public void testaMesInvalido1() throws DiaInvalidoException, MesInvalidoException, AnoInvalidoException{
 		data1 = new OurTime(12,30,2000);
 	}
 	
@@ -81,7 +81,7 @@ public class TestaOurTime {
 	}
 	
 	@Test(expected = MesInvalidoException.class)
-	public void testaMesInvalido3() throws DiaInvalidoException, MesInvalidoException{
+	public void testaMesInvalido3() throws DiaInvalidoException, MesInvalidoException, AnoInvalidoException{
 		data1 = new OurTime(13,-1,2015);
 	}
 	
@@ -93,7 +93,7 @@ public class TestaOurTime {
 	// Ano Invalido
 	
 	@Test(expected = AnoInvalidoException.class)
-	public void testaAnoInvalido1() throws DiaInvalidoException, MesInvalidoException{
+	public void testaAnoInvalido1() throws DiaInvalidoException, MesInvalidoException, AnoInvalidoException{
 		data1 = new OurTime(12,4,15);
 	}
 	
@@ -103,7 +103,7 @@ public class TestaOurTime {
 	}
 	
 	@Test(expected = AnoInvalidoException.class)
-	public void testaAnoInvalido3() throws DiaInvalidoException, MesInvalidoException{
+	public void testaAnoInvalido3() throws DiaInvalidoException, MesInvalidoException, AnoInvalidoException{
 		data1 = new OurTime(13,4,11);
 	}
 
@@ -151,7 +151,7 @@ public class TestaOurTime {
 	
 	@Test
 	public void testaMinuto() {
-		assertEquals(18, data2.getMinuto());
+		assertEquals(20, data2.getMinuto());
 		
 		int minutoAtual = new GregorianCalendar().get(GregorianCalendar.MINUTE);	
 		assertEquals(minutoAtual, data3.getMinuto());	
