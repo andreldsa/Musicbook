@@ -1,0 +1,11 @@
+package exceptions.time;
+
+public class MesInvalidoException extends Exception {
+<<<<<<< HEAD
+	public MesInvalidoException(String message){
+		super(message);
+	}	
+=======
+
+>>>>>>> e62ca751fca33ec7df952f44776bf68ce645f37f
+}

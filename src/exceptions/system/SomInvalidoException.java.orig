@@ -1,0 +1,11 @@
+package exceptions.system;
+
+public class SomInvalidoException extends Exception {
+<<<<<<< HEAD
+	public SomInvalidoException(String message){
+		super(message);
+	}
+=======
+
+>>>>>>> e62ca751fca33ec7df952f44776bf68ce645f37f
+}

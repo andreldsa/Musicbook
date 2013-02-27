@@ -55,4 +55,5 @@ public class Som implements Comparable<Som> {
 	public int getID() {
 		return ID;
 	}
+
 }
