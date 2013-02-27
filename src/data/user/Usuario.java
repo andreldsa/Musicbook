@@ -15,7 +15,6 @@ public class Usuario {
 	private Conta conta;
 	private String email;
 	private List<Integer> fontesDeSons;
-	private Map<Integer,Som> sons;
 	private int ID;
 	private List<Integer> perfilMusical;
 
@@ -42,7 +41,6 @@ public class Usuario {
 		this.email = email;
 		this.fontesDeSons = new ArrayList<Integer>();
 		this.perfilMusical = new ArrayList<Integer>();
-		this.sons = new HashMap<Integer, Som>();
 		this.ID = 0;
 	}
 	/**
@@ -102,7 +100,6 @@ public class Usuario {
 		return ID;
 	}
 	public void postaSom(Som som){
-		sons.put(som.getID(), som);
 		perfilMusical.add(som.getID());
 	}
 	
