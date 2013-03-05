@@ -1,11 +1,14 @@
 package data.user;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import data.som.Som;
+import data.util.UserAlphabeticalComparator;
 
 import exceptions.user.EmailInvalidoException;
 import exceptions.user.NomeInvalidoException;
@@ -16,7 +19,9 @@ public class Usuario {
 	private String email;
 	private List<Integer> fontesDeSons;
 	private int ID;
-	private List<Integer> perfilMusical;
+	private List<Som> sons;
+	private List<Usuario> seguidores;
+	private List<Integer> visaoDosSons;
 
 
 	/**
@@ -40,7 +45,9 @@ public class Usuario {
 		}
 		this.email = email;
 		this.fontesDeSons = new ArrayList<Integer>();
-		this.perfilMusical = new ArrayList<Integer>();
+		this.sons = new LinkedList<Som>();
+		this.seguidores = new ArrayList<Usuario>();
+		this.visaoDosSons = new LinkedList<Integer>();
 		this.ID = 0;
 	}
 	/**
@@ -82,7 +89,7 @@ public class Usuario {
 	}
 
 	public void addFonteDeSom(int IdFonte){
-		getFontesDeSons().add(IdFonte);
+		getFontesDeSons().add(0,IdFonte);
 	}
 
 	public List<Integer> getFontesDeSons() {
@@ -100,7 +107,7 @@ public class Usuario {
 		return ID;
 	}
 	public void postaSom(Som som){
-		perfilMusical.add(som.getID());
+		sons.add(0, som);
 	}
 	
 	@Override
@@ -122,7 +129,41 @@ public class Usuario {
 		return true;
 	}
 	public List<Integer> getPerfilMusical() {
+		List<Integer> perfilMusical = new ArrayList<Integer>();
+		for(int i = 0;i<sons.size(); i++){
+			perfilMusical.add(sons.get(i).getID());
+		}
 		return perfilMusical;
+	}
+	public void addSeguidor(Usuario seguidor) {
+		seguidores.add(seguidor);
+		Collections.sort(seguidores, new UserAlphabeticalComparator());
+	}
+	public int getNumeroDeSeguidores() {
+		return seguidores.size();
+	}
+	public List<Integer> getListaDeSeguidores() {
+		List<Integer> listaDeSeguidores = new ArrayList<Integer>();
+		for(int i = 0; i < getNumeroDeSeguidores(); i++){
+			listaDeSeguidores.add(seguidores.get(i).getID());
+		}
+		return listaDeSeguidores;
+	}
+	/**
+	 * Adiciona uma lista de ids de sons na visao de sons do usuario
+	 * @param perfilMusical
+	 */
+	public void addSonsNaVisao(List<Integer> perfilMusical) {
+		visaoDosSons.addAll(0, perfilMusical);
+		
+	}
+	/**
+	 * Adiciona um som na visao de sons do usuario
+	 * @param somId o id do som
+	 */
+	public void addSomNaVisao(int somId) {
+		visaoDosSons.add(0, somId);
+		
 	}
 	
 

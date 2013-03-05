@@ -13,9 +13,11 @@ import data.user.ContaBasica;
 import data.user.Usuario;
 import data.util.OurTime;
 import data.util.SolicitacaoDeAmizade;
+import exceptions.system.DataDeCriacaoInvalidaException;
 import exceptions.system.SessaoInexistenteException;
 import exceptions.system.SolicitacaoInexistenteException;
 import exceptions.system.SolicitacaoInvalidaException;
+import exceptions.system.SomInvalidoException;
 import exceptions.system.UsuarioInexistenteException;
 import exceptions.time.AnoInvalidoException;
 import exceptions.time.DiaInvalidoException;
@@ -34,22 +36,17 @@ public class Sistema {
 	private Map<Integer,Integer> sessoesAbertas;
 	//mapa com os ids de sons para os sons cadastrados
 	private Map<Integer,Som> sonsCadastrados;
-	//mapa com os logins de usuarios para as solicitacoes enviadas a eles
-	private Map <String,List<SolicitacaoDeAmizade>> solicitacoes;
 	private int userCounter;
 	private int sessionCounter;
 	private int soundCounter;
-	private int solicitationsCounter;
 	
 	public Sistema(){
 		this.usuarios = new HashMap<Integer, Usuario>();
 		this.sessoesAbertas = new HashMap<Integer, Integer>();
-		this.solicitacoes = new HashMap<String, List<SolicitacaoDeAmizade>>();
 		this.sonsCadastrados = new HashMap<Integer, Som>();
 		this.sessionCounter = 0;
 		this.userCounter = 0;
 		this.soundCounter = 0;
-		this.solicitationsCounter =0;
 	}
 	
 	/**
@@ -70,7 +67,6 @@ public class Sistema {
 		Conta conta = new ContaBasica(login, senha);
 		Usuario user = new Usuario(nome, conta, email,++userCounter);
 		usuarios.put(user.getID(), user);
-		solicitacoes.put(login, new ArrayList<SolicitacaoDeAmizade>());
 	}
 
 	private Usuario getUser(String login) {
@@ -115,26 +111,67 @@ public class Sistema {
 	}
 
 	/**
-	 * @throws AnoInvalidoException 
-	 * @throws NumberFormatException 
-	 * @throws SessaoInexistenteException 
-	 * Posta um som para todos aqueles que tem como fonte de som o usuario do ID de sessao provido
-	 * @param idSessao Id da Sessao do Usuario
-	 * @param link Link do Som
-	 * @param dataCriacao Data da Criacao do Post
-	 * @throws MesInvalidoException 
-	 * @throws DiaInvalidoException 
-	 * @throws  
+	 * Posta um Som no usuario da sessao criada
+	 * @param idSessao o id da sessao do usuario	
+	 * @param link o link do som a ser postado
+	 * @param dataCriacao a data de criacao do sim
+	 * @return
+	 * @throws SessaoInexistenteException
+	 * @throws SomInvalidoException
+	 * @throws DataDeCriacaoInvalidaException
 	 */
-	public int postarSom(int idSessao, String link, String dataCriacao) throws  DiaInvalidoException, MesInvalidoException, SessaoInexistenteException, NumberFormatException, AnoInvalidoException {
-		Usuario user = getSessionUser(idSessao);
+	public int postarSom(int idSessao, String link, String dataCriacao) throws    SessaoInexistenteException, SomInvalidoException, DataDeCriacaoInvalidaException {
+		Usuario user = getSessionUser(idSessao); 
+		if(link==null || link.isEmpty()) throw new SomInvalidoException("Som inválido");
 		String[] dataValores = dataCriacao.split("/");
-		OurTime ourTime = new OurTime(Integer.parseInt(dataValores[0]), Integer.parseInt(dataValores[1]), Integer.parseInt(dataValores[2]));
+		OurTime ourTime;
+		try {
+			ourTime = new OurTime(Integer.parseInt(dataValores[0]), Integer.parseInt(dataValores[1]), Integer.parseInt(dataValores[2]));
+		} catch (Exception e) {
+			throw new DataDeCriacaoInvalidaException("Data de Criação inválida");
+		}
 		Som som = new Som(link, ourTime,++soundCounter);
 		user.postaSom(som);
 		sonsCadastrados.put(som.getID(), som);
+		atualizaVisaoDeSonsDosSeguidores(user , som.getID());
 		return som.getID();
 		
+	}
+	private void atualizaVisaoDeSonsDosSeguidores(Usuario user, int somId) {
+		for(Integer userId : user.getListaDeSeguidores()){
+			getUsuario(userId).addSomNaVisao(somId);
+		}
+		
+	}
+
+	/**
+	 * O usuario da sessao dada segue o usuario com o login dado
+	 * @param idSessao
+	 * @param login
+	 * @throws LoginInvalidoException
+	 * @throws SessaoInexistenteException
+	 * @throws UsuarioInexistenteException
+	 */
+	public void seguirUsuario(int idSessao,String login) throws LoginInvalidoException, SessaoInexistenteException, UsuarioInexistenteException{
+		if(login == null || login.isEmpty()) throw new LoginInvalidoException("Login inválido");
+		Usuario seguidor = getSessionUser(idSessao);
+		Usuario seguido = getUser(login);
+		if(seguido == null){
+			throw new UsuarioInexistenteException("Login inexistente");
+		}
+		seguidor.addFonteDeSom(seguido.getID());
+		seguido.addSeguidor(seguidor);
+		seguidor.addSonsNaVisao(seguido.getPerfilMusical());
+	}
+	/**
+	 * Retorna o numero de seguidores do usuario da sessao dada
+	 * @param idSessao
+	 * @return
+	 * @throws SessaoInexistenteException
+	 */
+	public int getNumeroDeSeguidores(int idSessao) throws SessaoInexistenteException{
+		Usuario user = getSessionUser(idSessao);
+		return user.getNumeroDeSeguidores();
 	}
 
 	/**
@@ -146,55 +183,16 @@ public class Sistema {
 	public int getIDUsuario(int idSessao) throws SessaoInexistenteException {
 		return getSessionUser(idSessao).getID();
 	}
-
 	/**
-	 * Envia uma solicitacao de amizade de um usuario para outro
-	 * @param idSessao ID da Sessao do Usuario que enviou a solicitacao
-	 * @param login Login do usuario a receber a solicitacao
-	 * @return ID da Solicitacao
-	 * @throws SessaoInexistenteException 
-	 * @throws SolicitacaoInvalidaException 
-	 * @throws LoginInvalidoException 
+	 * Retorna a lista de seguidores do usuario da sessao dada
+	 * @param idSessao
+	 * @return
+	 * @throws SessaoInexistenteException
 	 */
-	public int enviarSolicitacaoAmizade(int idSessao, String login) throws SessaoInexistenteException, SolicitacaoInvalidaException, LoginInvalidoException {
-		Usuario remetente = getSessionUser(idSessao);
-		if(login == null || login.isEmpty()) throw new LoginInvalidoException("Login inválido");
-		Usuario destinatario = getUser(login);
-		if(destinatario == null) throw new LoginInvalidoException("Login inválido");
-		SolicitacaoDeAmizade solicitacao = new SolicitacaoDeAmizade(solicitationsCounter++, remetente, destinatario);
-		if(solicitacoes.get(login).contains(solicitacao)) throw new SolicitacaoInvalidaException("Solicitação já existente");
-		solicitacoes.get(login).add(solicitacao);
-		return solicitacao.getID();
+	public List<Integer> getListaDeSeguidores(int idSessao) throws SessaoInexistenteException{
+		return getSessionUser(idSessao).getListaDeSeguidores();
 	}
 	
-	/**
-	 * Aceita uma solicitacao de amizade de um usuario
-	 * @param idSessao Usuario a aceitar a solicitacao
-	 * @param solicitacaoID ID da solicitacao de amizade
-	 * @throws SessaoInexistenteException 
-	 * @throws SolicitacaoInvalidaException 
-	 * @throws SolicitacaoInexistenteException 
-	 */
-	public void aceitarSolicitacaoAmizade(int idSessao, int solicitacaoID) throws SessaoInexistenteException, SolicitacaoInvalidaException, SolicitacaoInexistenteException {
-		Usuario destinatario = getSessionUser(idSessao);
-		String login = destinatario.getLogin();
-		SolicitacaoDeAmizade solicitacao = solicitacaoRecebida(login,solicitacaoID);
-		if(solicitacao == null) throw new SolicitacaoInexistenteException("Solicitação inválida");
-		Usuario remetente = solicitacao.getRemetente();
-		destinatario.addFonteDeSom(remetente.getID());
-		remetente.addFonteDeSom(destinatario.getID());
-		solicitacoes.get(login).remove(solicitacao);
-		
-	}
-
-	private SolicitacaoDeAmizade solicitacaoRecebida(String login,
-			int solicitacaoID) {
-		for(SolicitacaoDeAmizade sol : solicitacoes.get(login)){
-			if (sol.getID() == solicitacaoID) return sol;
-		}
-		return null;
-	}
-
 	/**
 	 * Retorna uma lista contendo os IDs dos Usuarios que pertencem a sua Fonte de Sons
 	 * @param idSessao ID da Sessao do Usuario 
@@ -205,6 +203,7 @@ public class Sistema {
 		return getSessionUser(idSessao).getFontesDeSons();
 	}
 	
+	// Retorna o usuario da sessao dada, SessaoInexistenteException caso ela nao exista
 	private Usuario getSessionUser(int idSessao) throws SessaoInexistenteException {
 		Usuario user = usuarios.get(sessoesAbertas.get(idSessao));
 		if (user==null) {
@@ -248,12 +247,15 @@ public class Sistema {
 		return sonsCadastrados.get(somID);
 	}
 	/**
-	 * Retorna as solicitacoes do usuario com dado login
-	 * @param login
-	 * @return
+	 * Limpa todos os dados do sistema
 	 */
-	public List<SolicitacaoDeAmizade> getSolicitacoesDeAmizade(String login){
-		return solicitacoes.get(login);
+	public void zerarSistema(){
+		this.usuarios = new HashMap<Integer, Usuario>();
+		this.sessoesAbertas = new HashMap<Integer, Integer>();
+		this.sonsCadastrados = new HashMap<Integer, Som>();
+		this.sessionCounter = 0;
+		this.userCounter = 0;
+		this.soundCounter = 0;
 	}
 	
 
