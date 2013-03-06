@@ -257,6 +257,44 @@ public class Sistema {
 		this.userCounter = 0;
 		this.soundCounter = 0;
 	}
+	/**
+	 * O usuario da sessao passada favorita o som dado
+	 * @param idSessao o id da sessao do usuario
+	 * @param idSom o id do som
+	 * @throws SessaoInexistenteException
+	 * @throws SomInvalidoException
+	 */
+	public void favoritarSom(int idSessao, int idSom) throws SessaoInexistenteException, SomInvalidoException{
+		Usuario user = getSessionUser(idSessao);
+		if(!sonsCadastrados.containsKey((Integer)idSom)) throw new SomInvalidoException("Som inválido");
+		user.favoritaSom(idSom);
+		atualizaFeedsSecundarios(user,idSom);
+	}
+	
+	private void atualizaFeedsSecundarios(Usuario user, int idSom) {
+		for(int seguidorId : user.getListaDeSeguidores()){
+			getUsuario(seguidorId).addSomNoFeedSecundario(idSom);
+		}
+		
+	}
+	/**
+	 * Retorna o feed extra do usuario da sessao dada
+	 * @param idSessao
+	 * @return
+	 * @throws SessaoInexistenteException
+	 */
+	public List<Integer> getFeedExtra(int idSessao) throws SessaoInexistenteException{
+		return getSessionUser(idSessao).getFeedExtra();
+	}
+	/**
+	 * Retorna os sons favoritos do usuario da sessao dada
+	 * @param idSessao
+	 * @return
+	 * @throws SessaoInexistenteException
+	 */
+	public List<Integer> getSonsFavoritos(int idSessao) throws SessaoInexistenteException{
+		return getSessionUser(idSessao).getSonsFavoritos();
+	}
 	
 
 }

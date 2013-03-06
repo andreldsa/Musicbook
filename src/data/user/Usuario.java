@@ -22,6 +22,8 @@ public class Usuario {
 	private List<Som> sons;
 	private List<Usuario> seguidores;
 	private List<Integer> visaoDosSons;
+	private List<Integer> sonsFavoritos;
+	private List<Integer> feedSecundario;
 
 
 	/**
@@ -48,6 +50,8 @@ public class Usuario {
 		this.sons = new LinkedList<Som>();
 		this.seguidores = new ArrayList<Usuario>();
 		this.visaoDosSons = new LinkedList<Integer>();
+		this.sonsFavoritos = new ArrayList<Integer>();
+		this.feedSecundario = new ArrayList<Integer>();
 		this.ID = 0;
 	}
 	/**
@@ -87,29 +91,50 @@ public class Usuario {
 	public String getEmail() {
 		return this.email;
 	}
-
+	/**
+	 * Adiciona uma fonte de som ao usuario
+	 * @param IdFonte
+	 */
 	public void addFonteDeSom(int IdFonte){
 		getFontesDeSons().add(0,IdFonte);
 	}
-
+	/**
+	 * Retorna as fontes de sons do usuario
+	 * @return
+	 */
 	public List<Integer> getFontesDeSons() {
 		return fontesDeSons;
 	}
-	
+	/**
+	 * Retorna a conta do Usuario
+	 * @return
+	 */
 	public Conta getConta(){
 		return conta;
 	}
-	
+	/**
+	 * Autentica a Conta do usuario
+	 * @param senha o objeto Senha
+	 * @return
+	 */
 	public boolean autenticaConta(Object senha){
 		return getConta().autentica(senha);
 	}
+	/**
+	 * Retorna o ID do usuario
+	 * @return
+	 */
 	public int getID() {
 		return ID;
 	}
+	/**
+	 * Posta um som
+	 * @param som
+	 */
 	public void postaSom(Som som){
 		sons.add(0, som);
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -128,6 +153,10 @@ public class Usuario {
 			return false;
 		return true;
 	}
+	/**
+	 * Retorna o perfil musical do usuario
+	 * @return
+	 */
 	public List<Integer> getPerfilMusical() {
 		List<Integer> perfilMusical = new ArrayList<Integer>();
 		for(int i = 0;i<sons.size(); i++){
@@ -135,13 +164,25 @@ public class Usuario {
 		}
 		return perfilMusical;
 	}
+	/**
+	 * Addiciona um seguidor ao usuario
+	 * @param seguidor
+	 */
 	public void addSeguidor(Usuario seguidor) {
 		seguidores.add(seguidor);
 		Collections.sort(seguidores, new UserAlphabeticalComparator());
 	}
+	/**
+	 * Retorna a quantidade de seguidores do usuario
+	 * @return
+	 */
 	public int getNumeroDeSeguidores() {
 		return seguidores.size();
 	}
+	/**
+	 * Retorna a lista com os ids dos seguidores do usuario
+	 * @return
+	 */
 	public List<Integer> getListaDeSeguidores() {
 		List<Integer> listaDeSeguidores = new ArrayList<Integer>();
 		for(int i = 0; i < getNumeroDeSeguidores(); i++){
@@ -155,7 +196,7 @@ public class Usuario {
 	 */
 	public void addSonsNaVisao(List<Integer> perfilMusical) {
 		visaoDosSons.addAll(0, perfilMusical);
-		
+
 	}
 	/**
 	 * Adiciona um som na visao de sons do usuario
@@ -163,8 +204,36 @@ public class Usuario {
 	 */
 	public void addSomNaVisao(int somId) {
 		visaoDosSons.add(0, somId);
-		
+
 	}
-	
+	/**
+	 * Adiciona um som aos favoritos
+	 * @param idSom O ID do som a ser favoritado
+	 */
+	public void favoritaSom(int idSom) {
+		sonsFavoritos.add(0, idSom);
+	}
+	/**
+	 * Adiciona um som no feed secundario do usuario
+	 * @param idSom O ID do som a ser adicionado
+	 */
+	public void addSomNoFeedSecundario(int idSom) {
+		feedSecundario.add(0, idSom);
+	}
+	/**
+	 * Retorna os ids dos sons do feed extra do usuario
+	 * @return
+	 */
+	public List<Integer> getFeedExtra() {
+		return feedSecundario;		
+	}
+	/**
+	 * Retorna os ids sons favoritados pelo usuario
+	 * @return
+	 */
+	public List<Integer> getSonsFavoritos() {
+		return sonsFavoritos;
+	}
+
 
 }
