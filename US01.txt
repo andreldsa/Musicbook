@@ -1,0 +1,102 @@
+# User Story 01 - Criação de conta
+
+#    O usuário se cadastra no sistema
+# e adiciona alguns sons ao seu perfil musical.
+#    Cada som tem um link e uma data de criação pelo
+# usuário, ainda que aponte para vídeos com a
+# mesma música ou mesmo sons com a mesma url,
+# a data de criação faz delas postagens distintas.
+#    Os sons são armazenados no perfil musical na
+# ordem cronológica de criação, como em uma pilha.
+
+# limpar os dados do sistema
+zerarSistema
+
+# entradas válidas
+
+criarUsuario login="mark" senha="m@rk" nome="Mark Zuckerberg" email="mark@facebook.com"
+criarUsuario login="steve" senha="5t3v3" nome="Steven Paul Jobs" email="jobs@apple.com"
+
+# o método 'abrirSessao' retorna o ID da sessão
+sessaoMark=abrirSessao login="mark" senha="m@rk"
+expect "Mark Zuckerberg" getAtributoUsuario login="mark" atributo="nome" 
+expect "mark@facebook.com" getAtributoUsuario login="mark" atributo="email"
+
+sessaoSteve=abrirSessao login="steve" senha="5t3v3"
+expect "Steven Paul Jobs" getAtributoUsuario login="steve" atributo="nome"
+expect "jobs@apple.com" getAtributoUsuario login="steve" atributo="email"
+
+# verifica perfil musical
+expect {} getPerfilMusical idSessao=${sessaoMark} 
+expect {} getPerfilMusical idSessao=${sessaoSteve} 
+
+# Mark posta sons
+som1ID=postarSom idSessao=${sessaoMark} link="http://letras.mus.br/david-guetta/#mais-acessadas/1944260" dataCriacao="23/06/2013"
+som2ID=postarSom idSessao=${sessaoMark} link="http://letras.mus.br/david-guetta/#mais-acessadas/1944260" dataCriacao="24/06/2013"
+
+expect "23/06/2013" getAtributoSom idSom=${som1ID} atributo="dataCriacao"
+expect "24/06/2013" getAtributoSom idSom=${som2ID} atributo="dataCriacao"
+
+# Steve posta sons
+som3ID=postarSom idSessao=${sessaoSteve} link="http://www.youtube.com/watch?v=3KsPIJK17uk" dataCriacao="25/12/2013"
+som4ID=postarSom idSessao=${sessaoSteve} link="http://www.youtube.com/watch?v=JRfuAukYTKg" dataCriacao="23/06/2014"
+som5ID=postarSom idSessao=${sessaoSteve} link="http://www.youtube.com/watch?v=PVzljDmoPVs" dataCriacao="10/04/2015"
+
+expect "25/12/2013" getAtributoSom idSom=${som3ID} atributo="dataCriacao"
+expect "23/06/2014" getAtributoSom idSom=${som4ID} atributo="dataCriacao"
+expect "10/04/2015" getAtributoSom idSom=${som5ID} atributo="dataCriacao"
+
+expect {${som2ID},${som1ID}} getPerfilMusical idSessao=${sessaoMark} 
+expect {${som5ID},${som4ID},${som3ID}} getPerfilMusical idSessao=${sessaoSteve}
+
+#--------------------------------------------------------------------------------------------------------------------------------------------------
+
+# entradas inválidas
+
+expectError "Login inválido" criarUsuario login= senha="xptz" nome="xpto" email="logininvalido@gmail.com"
+expectError "Login inválido" criarUsuario login="" senha="xptz" nome="xpto" email="deuerro@gmail.com"
+expectError "Nome inválido" criarUsuario login="xpto" senha="xptz" nome= email="nomeinvalido@hotmail.com"
+expectError "Nome inválido" criarUsuario login="xpto" senha="xptz" nome="" email="nomevazio@email.com"
+expectError "Email inválido" criarUsuario login="xpto" senha="xptz" nome="patriciano" email=
+expectError "Email inválido" criarUsuario login="xpto" senha="xptz" nome="pantcho" email=""
+expectError "Já existe um usuário com este email" criarUsuario login="xpto" senha="tttppp" nome="markito" email="mark@facebook.com"
+expectError "Já existe um usuário com este login" criarUsuario login="mark" senha="tttppp" nome="xpto" email="markinho@facebook.com"
+expectError "Login inválido" abrirSessao login= senha="teste"
+expectError "Login inválido" abrirSessao login="" senha="segundoteste"
+expectError "Login inválido" abrirSessao login="mark" senha="teste"
+expectError "Login inválido" abrirSessao login="mark" senha="segundoteste"
+expectError "Usuário inexistente" abrirSessao login="xpto" senha="maisXptoAinda"
+expectError "Som inválido" postarSom idSessao=${sessaoSteve} link= dataCriacao="99/99/9999"
+expectError "Som inválido" postarSom idSessao=${sessaoSteve} link="" dataCriacao="99/99/9999"
+
+expectError "Data de Criação inválida" postarSom idSessao=${sessaoSteve} link="http://www.youtube.com/watch?v=3KsPIJK17uk" dataCriacao="20/12/2012"
+expectError "Data de Criação inválida" postarSom idSessao=${sessaoSteve} link="http://www.youtube.com/watch?v=3KsPIJK17uk" dataCriacao="12/30/2012"
+expectError "Data de Criação inválida" postarSom idSessao=${sessaoSteve} link="http://www.youtube.com/watch?v=3KsPIJK17uk" dataCriacao="32/11/2012"
+expectError "Data de Criação inválida" postarSom idSessao=${sessaoSteve} link="http://www.youtube.com/watch?v=3KsPIJK17uk" dataCriacao="29/02/2015"
+expectError "Data de Criação inválida" postarSom idSessao=${sessaoSteve} link="http://www.youtube.com/watch?v=3KsPIJK17uk" dataCriacao="31/04/2015"
+expectError "Data de Criação inválida" postarSom idSessao=${sessaoSteve} link="http://www.youtube.com/watch?v=3KsPIJK17uk" dataCriacao="30/04/15"
+
+# perfil musical de Steve continua intacto
+expect {${som5ID},${som4ID},${som3ID}} getPerfilMusical idSessao=${sessaoSteve}
+
+expectError "Login inválido" getAtributoUsuario login= atributo="nome"
+expectError "Login inválido" getAtributoUsuario login="" atributo="nome"
+expectError "Usuário inexistente" getAtributoUsuario login="xpto" atributo="nome"
+expectError "Atributo inválido" getAtributoUsuario login="mark" atributo=
+expectError "Atributo inválido" getAtributoUsuario login="mark" atributo=""
+expectError "Atributo inexistente" getAtributoUsuario login="mark" atributo="xpto"
+
+expectError "Som inválido" getAtributoSom idSom= atributo="xpto"
+expectError "Som inválido" getAtributoSom idSom="" atributo="xpto"
+expectError "Atributo inválido" getAtributoSom idSom=${som1ID} atributo=
+expectError "Atributo inválido" getAtributoSom idSom=${som1ID} atributo=""
+expectError "Atributo inexistente" getAtributoSom idSom=${som1ID} atributo="xpto"
+
+#Encerrar a sessao de Mark
+encerrarSessao login="mark"
+
+#Encerrar a sessao de Steve
+encerrarSessao login="steve"
+
+encerrarSistema
+quit

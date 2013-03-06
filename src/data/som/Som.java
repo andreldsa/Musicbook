@@ -15,7 +15,7 @@ public class Som implements Comparable<Som> {
 	 * @throws SomInvalidoException 
 	 */
 	public Som(String link, OurTime dataCriacao) throws SomInvalidoException  {
-		if(!link.startsWith("http://") || !link.startsWith("https://")){
+		if(!link.startsWith("http://") && !link.startsWith("https://")){
 			throw new SomInvalidoException("Som inválido.");
 		}
 		this.link = link;

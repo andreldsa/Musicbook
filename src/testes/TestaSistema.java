@@ -11,8 +11,7 @@ import org.junit.Test;
 import data.system.Sistema;
 import exceptions.system.DataDeCriacaoInvalidaException;
 import exceptions.system.SessaoInexistenteException;
-import exceptions.system.SolicitacaoInexistenteException;
-import exceptions.system.SolicitacaoInvalidaException;
+import exceptions.system.SessaoInvalidaException;
 import exceptions.system.SomInvalidoException;
 import exceptions.system.UsuarioInexistenteException;
 import exceptions.time.AnoInvalidoException;
@@ -49,16 +48,67 @@ public class TestaSistema {
 		assertEquals(3, sistema.getIDUsuario(idSessaoZe));
 	}
 	
+	
 	@Test
-	public void testaSolicitacaoAmizade() throws LoginInvalidoException, NomeInvalidoException, EmailInvalidoException, LoginJaExisteException, EmailJaExisteException, UsuarioInexistenteException, SessaoInexistenteException, SolicitacaoInvalidaException, SolicitacaoInexistenteException{
+	public void testaGetListaDeSeguidores() throws LoginInvalidoException, NomeInvalidoException, EmailInvalidoException, LoginJaExisteException, EmailJaExisteException, UsuarioInexistenteException, SessaoInexistenteException{
 		sistema.criarUsuario("Jiao.Silva", "jiao123", "Jiao Silva Diniz", "Jiao.Silva@gmail.com");
 		
 		int idSessaoJoao = sistema.abrirSessao("Joao.Silva", "joao123");
 		int idSessaoJiao = sistema.abrirSessao("Jiao.Silva", "jiao123");
 		
-		int solicitacao1ID = sistema.enviarSolicitacaoAmizade(idSessaoJoao, "Jiao.Silva");
+		List<Integer> seguidoresDeJoao = new ArrayList<Integer>();
 		
-		sistema.aceitarSolicitacaoAmizade(idSessaoJiao, solicitacao1ID);
+		assertEquals(seguidoresDeJoao, sistema.getListaDeSeguidores(idSessaoJoao));
+		
+		sistema.seguirUsuario(idSessaoJiao, "Joao.Silva");
+		
+		seguidoresDeJoao.add(sistema.getIDUsuario(idSessaoJiao));
+		
+		assertEquals(seguidoresDeJoao, sistema.getListaDeSeguidores(idSessaoJoao));
+	}
+	
+	@Test
+	public void testagetVisaoDosSons() throws LoginInvalidoException, NomeInvalidoException, EmailInvalidoException, LoginJaExisteException, EmailJaExisteException, UsuarioInexistenteException, SessaoInexistenteException, SomInvalidoException, DataDeCriacaoInvalidaException{
+		sistema.criarUsuario("Jiao.Silva", "jiao123", "Jiao Silva Diniz", "Jiao.Silva@gmail.com");
+		
+		int idSessaoJoao = sistema.abrirSessao("Joao.Silva", "joao123");
+		int idSessaoJiao = sistema.abrirSessao("Jiao.Silva", "jiao123");
+		
+		sistema.seguirUsuario(idSessaoJiao, "Joao.Silva");
+		
+		List<Integer> listaVisaoDeSonsJiao = new ArrayList<Integer>();
+		assertEquals(listaVisaoDeSonsJiao, sistema.getVisaoDosSons(idSessaoJiao));
+		
+		int idSom1 = sistema.postarSom(idSessaoJoao, "http://www.youtube.com/watch?v=r-fIOrUTIOQ", "13/08/2015");
+		listaVisaoDeSonsJiao.add(idSom1);
+		assertEquals(listaVisaoDeSonsJiao, sistema.getVisaoDosSons(idSessaoJiao));
+	}
+
+	
+	@Test
+	public void testaGetNumeroDeSeguidores() throws LoginInvalidoException, NomeInvalidoException, EmailInvalidoException, LoginJaExisteException, EmailJaExisteException, UsuarioInexistenteException, SessaoInexistenteException{
+		sistema.criarUsuario("Jiao.Silva", "jiao123", "Jiao Silva Diniz", "Jiao.Silva@gmail.com");
+		
+		int idSessaoJoao = sistema.abrirSessao("Joao.Silva", "joao123");
+		int idSessaoJiao = sistema.abrirSessao("Jiao.Silva", "jiao123");
+		
+		assertEquals(0, sistema.getNumeroDeSeguidores(idSessaoJoao));
+		
+		sistema.seguirUsuario(idSessaoJiao, "Joao.Silva");
+		
+		assertEquals(1, sistema.getNumeroDeSeguidores(idSessaoJoao));
+	}
+	
+	
+	@Test
+	public void testaSeguirUsuario() throws LoginInvalidoException, NomeInvalidoException, EmailInvalidoException, LoginJaExisteException, EmailJaExisteException, UsuarioInexistenteException, SessaoInexistenteException{
+		sistema.criarUsuario("Jiao.Silva", "jiao123", "Jiao Silva Diniz", "Jiao.Silva@gmail.com");
+		
+		int idSessaoJoao = sistema.abrirSessao("Joao.Silva", "joao123");
+		int idSessaoJiao = sistema.abrirSessao("Jiao.Silva", "jiao123");
+		
+		sistema.seguirUsuario(idSessaoJoao, "Jiao.Silva");
+		sistema.seguirUsuario(idSessaoJiao, "Joao.Silva");
 		
 		List<Integer> fonteDeSonsJiao = new ArrayList<Integer>();
 		List<Integer> fonteDeSonsJoao = new ArrayList<Integer>();
@@ -70,40 +120,44 @@ public class TestaSistema {
 		assertEquals(fonteDeSonsJoao, sistema.getFonteDeSons(idSessaoJoao));
 	}
 	
-	@Test(expected = LoginInvalidoException.class)
-	public void testaLoginInvalido1() throws LoginInvalidoException, UsuarioInexistenteException, SessaoInexistenteException, SolicitacaoInvalidaException{
-		int idSessaoJoao = sistema.abrirSessao("Joao.Silva", "joao123");
-		
-		sistema.enviarSolicitacaoAmizade(idSessaoJoao, null);
-	}
-	
-	@Test(expected = LoginInvalidoException.class)
-	public void testaLoginInvalido2() throws LoginInvalidoException, UsuarioInexistenteException, SessaoInexistenteException, SolicitacaoInvalidaException{
-		int idSessaoJoao = sistema.abrirSessao("Joao.Silva", "joao123");
-		
-		sistema.enviarSolicitacaoAmizade(idSessaoJoao, "");
+	//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	@Test(expected = SessaoInexistenteException.class)
+	public void testaSessaoInexistente1() throws LoginInvalidoException, SessaoInexistenteException, UsuarioInexistenteException {
+		sistema.seguirUsuario(39482, "Joao.Silva");	
 	}
 	
 	@Test(expected = SessaoInexistenteException.class)
-	public void testaSessaoInexistente() throws LoginInvalidoException, NomeInvalidoException, EmailInvalidoException, LoginJaExisteException, EmailJaExisteException, SessaoInexistenteException, SolicitacaoInvalidaException, UsuarioInexistenteException, SolicitacaoInexistenteException{
-		sistema.criarUsuario("Jiao.Silva", "jiao123", "Jiao Silva Diniz", "Jiao.Silva@gmail.com");		
-
-		int idSessaoJoao = sistema.abrirSessao("Joao.Silva", "joao123");
-		int idSolicitacao1 = sistema.enviarSolicitacaoAmizade(idSessaoJoao, "Jiao.Silva");	
+	public void testaSessaoInexistente2() throws SessaoInexistenteException{
+		sistema.getListaDeSeguidores(39482);	
+	}
 		
-		sistema.aceitarSolicitacaoAmizade(idSessaoJoao + 1, idSolicitacao1);
+	@Test(expected = SessaoInexistenteException.class)
+	public void testaSessaoInexistente3() throws SessaoInexistenteException{
+		sistema.getNumeroDeSeguidores(39482);
 	}
 	
-	@Test(expected = SolicitacaoInexistenteException.class)
-	public void testaSolicitacaoInexistente1() throws LoginInvalidoException, NomeInvalidoException, EmailInvalidoException, LoginJaExisteException, EmailJaExisteException, UsuarioInexistenteException, SessaoInexistenteException, SolicitacaoInvalidaException, SolicitacaoInexistenteException{
-		sistema.criarUsuario("Jiao.Silva", "jiao123", "Jiao Silva Diniz", "Jiao.Silva@gmail.com");		
-
+	@Test(expected = SessaoInexistenteException.class)
+	public void testaSessaoInexistente4() throws SessaoInexistenteException{
+		sistema.getFonteDeSons(39482);	
+	}
+	
+	//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	
+	@Test(expected = LoginInvalidoException.class)
+	public void testaLoginInvalido1() throws LoginInvalidoException, UsuarioInexistenteException, SessaoInexistenteException{
 		int idSessaoJoao = sistema.abrirSessao("Joao.Silva", "joao123");
 		
-		final int idSolicitacaoInexistente = 143;
-		
-		sistema.aceitarSolicitacaoAmizade(idSessaoJoao, idSolicitacaoInexistente);
+		sistema.seguirUsuario(idSessaoJoao, null);
 	}
+	
+	@Test(expected = LoginInvalidoException.class)
+	public void testaLoginInvalido2() throws LoginInvalidoException, UsuarioInexistenteException, SessaoInexistenteException{
+		int idSessaoJoao = sistema.abrirSessao("Joao.Silva", "joao123");
+		
+		sistema.seguirUsuario(idSessaoJoao, "");
+	}
+	
+	//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	
 	@Test(expected = LoginInvalidoException.class)
 	public void testaLoginInválido1() throws LoginInvalidoException, UsuarioInexistenteException{
@@ -125,79 +179,51 @@ public class TestaSistema {
 		sistema.abrirSessao("Joao.Silva","ze123");
 	}
 	
+	//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	
 	@Test(expected = UsuarioInexistenteException.class)
 	public void testaUsuarioINexistente() throws LoginInvalidoException, UsuarioInexistenteException {
 		sistema.abrirSessao("Jiao.Silva","joao123");
 	}
 	
+	//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 	@Test(expected = EmailJaExisteException.class)
 	public void testaEmailJaExiste() throws LoginInvalidoException, NomeInvalidoException, EmailInvalidoException, LoginJaExisteException, EmailJaExisteException{
 		sistema.criarUsuario("Jiao.Silva", "jiao123", "Jiao Silva Diniz", "Joao.Silva@gmail.com");
 	}
+
+	//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	
 	@Test(expected = LoginJaExisteException.class )
 	public void testaLoginJaExisteException() throws LoginInvalidoException, NomeInvalidoException, EmailInvalidoException, LoginJaExisteException, EmailJaExisteException{
 		sistema.criarUsuario("Joao.Silva", "jiao123", "Jiao Silva Diniz", "Jiao.Silva@gmail.com");
 	}
 	
-	@Test(expected = DataDeCriacaoInvalidaException.class)
-	public void testaDataDeCriacaoInvalida1() throws LoginInvalidoException, UsuarioInexistenteException, DiaInvalidoException, MesInvalidoException, SessaoInexistenteException, NumberFormatException, AnoInvalidoException{
-		int idSessao = sistema.abrirSessao("Joao.Silva", "joao123");
-		sistema.postarSom(idSessao,"http://www.youtube.com/watch?v=r-fIOrUTIOQ", "20/12/2012");
-	}
-	
-	@Test(expected = DataDeCriacaoInvalidaException.class)
-	public void testaDataDeCriacaoInvalida2() throws DiaInvalidoException, MesInvalidoException, SessaoInexistenteException, LoginInvalidoException, UsuarioInexistenteException, NumberFormatException, AnoInvalidoException{
-		int idSessao = sistema.abrirSessao("Joao.Silva", "joao123");
-		sistema.postarSom(idSessao,"http://www.youtube.com/watch?v=r-fIOrUTIOQ", "12/30/2012");
-	}
-	
-	@Test(expected = DataDeCriacaoInvalidaException.class)
-	public void testaDataDeCriacaoInvalida3() throws LoginInvalidoException, UsuarioInexistenteException, DiaInvalidoException, MesInvalidoException, SessaoInexistenteException, NumberFormatException, AnoInvalidoException{
-		int idSessao = sistema.abrirSessao("Joao.Silva", "joao123");
-		sistema.postarSom(idSessao,"http://www.youtube.com/watch?v=r-fIOrUTIOQ", "32/11/2012");
-	}
-	
-	@Test(expected = DataDeCriacaoInvalidaException.class)
-	public void testaDataDeCriacaoInvalida4() throws LoginInvalidoException, UsuarioInexistenteException, DiaInvalidoException, MesInvalidoException, SessaoInexistenteException, NumberFormatException, AnoInvalidoException{
-		int idSessao = sistema.abrirSessao("Joao.Silva", "joao123");
-		sistema.postarSom(idSessao,"http://www.youtube.com/watch?v=r-fIOrUTIOQ", "29/02/2015");
-	}
-	
-	@Test(expected = DataDeCriacaoInvalidaException.class)
-	public void testaDataDeCriacaoInvalida5() throws LoginInvalidoException, UsuarioInexistenteException, DiaInvalidoException, MesInvalidoException, SessaoInexistenteException, NumberFormatException, AnoInvalidoException{
-		int idSessao = sistema.abrirSessao("Joao.Silva", "joao123");
-		sistema.postarSom(idSessao,"http://www.youtube.com/watch?v=r-fIOrUTIOQ", "31/04/2015");
-	}
-	
-	@Test(expected = DataDeCriacaoInvalidaException.class)
-	public void testaDataDeCriacaoInvalida6() throws LoginInvalidoException, UsuarioInexistenteException, DiaInvalidoException, MesInvalidoException, SessaoInexistenteException, NumberFormatException, AnoInvalidoException{
-		int idSessao = sistema.abrirSessao("Joao.Silva", "joao123");
-		sistema.postarSom(idSessao,"http://www.youtube.com/watch?v=r-fIOrUTIOQ", "30/04/15");
-	}
+	//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	
 	@Test(expected = SomInvalidoException.class)
-	public void testaSomInvalido1() throws DiaInvalidoException, MesInvalidoException, SessaoInexistenteException, LoginInvalidoException, UsuarioInexistenteException, NumberFormatException, AnoInvalidoException{
+	public void testaSomInvalido1() throws DiaInvalidoException, MesInvalidoException, SessaoInexistenteException, LoginInvalidoException, UsuarioInexistenteException, NumberFormatException, AnoInvalidoException, SomInvalidoException, DataDeCriacaoInvalidaException{
 		int idSessao = sistema.abrirSessao("Joao.Silva","joao123");
 		sistema.postarSom(idSessao,"", "99/99/9999");
 	}
 	
 	@Test(expected = SomInvalidoException.class)
-	public void testaSomInvalido2() throws LoginInvalidoException, UsuarioInexistenteException, DiaInvalidoException, MesInvalidoException, SessaoInexistenteException, NumberFormatException, AnoInvalidoException{
+	public void testaSomInvalido2() throws LoginInvalidoException, UsuarioInexistenteException, DiaInvalidoException, MesInvalidoException, SessaoInexistenteException, NumberFormatException, AnoInvalidoException, SomInvalidoException, DataDeCriacaoInvalidaException{
 		int idSessao = sistema.abrirSessao("Joao.Silva","joao123");
 		sistema.postarSom(idSessao, null, "00/00/0000");
 	}
 	
 	@Test(expected = SomInvalidoException.class)
-	public void testaSomInvalido3() throws LoginInvalidoException, UsuarioInexistenteException, DiaInvalidoException, MesInvalidoException, SessaoInexistenteException, NumberFormatException, AnoInvalidoException{
+	public void testaSomInvalido3() throws LoginInvalidoException, UsuarioInexistenteException, DiaInvalidoException, MesInvalidoException, SessaoInexistenteException, NumberFormatException, AnoInvalidoException, SomInvalidoException, DataDeCriacaoInvalidaException{
 		int idSessao = sistema.abrirSessao("Joao.Silva","joao123");
-		sistema.postarSom(idSessao, "www.youtube.com/watch?v=r-fIOrUTIOQ", "01/01/2014");
+		sistema.postarSom(idSessao, "www.youtube.com/watch?v=r-fIOrUTIOQ", "31/02/2014");
 	}
 	
 	@Test(expected = SomInvalidoException.class)
-	public void testaSomInvalido4() throws LoginInvalidoException, UsuarioInexistenteException, DiaInvalidoException, MesInvalidoException, SessaoInexistenteException, NumberFormatException, AnoInvalidoException{
+	public void testaSomInvalido4() throws LoginInvalidoException, UsuarioInexistenteException, DiaInvalidoException, MesInvalidoException, SessaoInexistenteException, NumberFormatException, AnoInvalidoException, SomInvalidoException, DataDeCriacaoInvalidaException{
 		int idSessao = sistema.abrirSessao("Joao.Silva","joao123");
-		sistema.postarSom(idSessao, "ftp://www.youtube.com/watch?v=r-fIOrUTIOQ", "01/01/2014");
+		sistema.postarSom(idSessao, "ftp://www.youtube.com/watch?v=r-fIOrUTIOQ", "31/02/2014");
 	}
 }
 	

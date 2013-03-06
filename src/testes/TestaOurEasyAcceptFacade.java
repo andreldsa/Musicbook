@@ -5,9 +5,14 @@ import org.junit.Test;
 
 import exceptions.EAfacade.AtributoInexistenteException;
 import exceptions.EAfacade.AtributoInvalidoException;
+import exceptions.system.DataDeCriacaoInvalidaException;
+import exceptions.system.SessaoInexistenteException;
 import exceptions.system.SessaoInvalidaException;
-import exceptions.system.SolicitacaoInvalidaException;
+import exceptions.system.SomInvalidoException;
 import exceptions.system.UsuarioInexistenteException;
+import exceptions.time.AnoInvalidoException;
+import exceptions.time.DiaInvalidoException;
+import exceptions.time.MesInvalidoException;
 import exceptions.user.LoginInvalidoException;
 
 public class TestaOurEasyAcceptFacade {
@@ -20,6 +25,8 @@ public class TestaOurEasyAcceptFacade {
 		facade.criarUsuario("Joao.Silva", "joao123", "Joao Silva Diniz", "Joao.Silva@gmail.com");
 	}
 
+	//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 	@Test(expected = LoginInvalidoException.class)
 	public void testLoginInvalido1() {
 		facade.getAtributoUsuario(null, "nome");	
@@ -30,10 +37,14 @@ public class TestaOurEasyAcceptFacade {
 		facade.getAtributoUsuario("", "nome");
 	}
 	
+	//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 	@Test(expected = UsuarioInexistenteException.class)
 	public void testaUsuarioInexistnete() {
 		facade.getAtributoUsuario("xpto", "nome");
 	}
+	
+	//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	
 	@Test(expected = AtributoInvalidoException.class)
 	public void testaAtributoInvalido1() {
@@ -50,55 +61,106 @@ public class TestaOurEasyAcceptFacade {
 		facade.getAtributoUsuario("Joao.Silva", "xpto");
 	}
 	
+	//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 	@Test(expected = SessaoInvalidaException.class)
 	public void testaSessaoInvalida1(){
-		facade.criarUsuario("Jiao.Silva", "jiao123", "Jiao Silva Diniz", "Jiao.Silva@gmail.com");		
-		
-		facade.enviarSolicitacaoAmizade("", "Joao.Silva");	
+		facade.seguirUsuario("", "Joao.Silva");	
 	}
 	
 	@Test(expected = SessaoInvalidaException.class)
-	public void testaSessaoInvalida2(){
-		facade.criarUsuario("Jiao.Silva", "jiao123", "Jiao Silva Diniz", "Jiao.Silva@gmail.com");		
-		
-		facade.enviarSolicitacaoAmizade(null , "Jiao.Silva");
+	public void testaSessaoInvalida2(){	
+		facade.seguirUsuario(null, "Joao.Silva");
 	}
 	
 	@Test(expected = SessaoInvalidaException.class)
 	public void testaSessaoInvalida3(){
-		facade.criarUsuario("Jiao.Silva", "jiao123", "Jiao Silva Diniz", "Jiao.Silva@gmail.com");		
-
-		int idSessaoJoao = facade.abrirSessao("Joao.Silva", "joao123");
-		int idSolicitacao1 = facade.enviarSolicitacaoAmizade(idSessaoJoao + "", "Jiao.Silva");	
-		
-		facade.aceitarSolicitacaoAmizade("", idSolicitacao1 + "");
+		facade.getListaDeSeguidores("");	
 	}
 	
 	@Test(expected = SessaoInvalidaException.class)
 	public void testaSessaoInvalida4(){
-		facade.criarUsuario("Jiao.Silva", "jiao123", "Jiao Silva Diniz", "Jiao.Silva@gmail.com");		
-
-		int idSessaoJoao = facade.abrirSessao("Joao.Silva", "joao123");
-		int idSolicitacao1 = facade.enviarSolicitacaoAmizade(idSessaoJoao + "", "Jiao.Silva");	
-		
-		facade.aceitarSolicitacaoAmizade(null, idSolicitacao1 + "");
+		facade.getListaDeSeguidores(null);
 	}
 	
-	@Test(expected = SolicitacaoInvalidaException.class)
-	public void  testaSolicitacaoInvalida1(){
-		facade.criarUsuario("Jiao.Silva", "jiao123", "Jiao Silva Diniz", "Jiao.Silva@gmail.com");		
-
-		int idSessaoJoao = facade.abrirSessao("Joao.Silva", "joao123");
-		
-		facade.aceitarSolicitacaoAmizade(idSessaoJoao + "", "");
+	@Test(expected = SessaoInvalidaException.class)
+	public void testaSessaoInvalida5(){
+		facade.getNumeroDeSeguidores("");	
 	}
 	
-	@Test(expected = SolicitacaoInvalidaException.class)
-	public void  testaSolicitacaoInvalida2(){
-		facade.criarUsuario("Jiao.Silva", "jiao123", "Jiao Silva Diniz", "Jiao.Silva@gmail.com");		
-
-		int idSessaoJoao = facade.abrirSessao("Joao.Silva", "joao123");
-		
-		facade.aceitarSolicitacaoAmizade(idSessaoJoao + "", null);
+	@Test(expected = SessaoInvalidaException.class)
+	public void testaSessaoInvalida6(){
+		facade.getNumeroDeSeguidores(null);
 	}
-}
+	
+	@Test(expected = SessaoInvalidaException.class)
+	public void testaSessaoInvalida7(){
+		facade.getFonteDeSons("");	
+	}
+	
+	@Test(expected = SessaoInvalidaException.class)
+	public void testaSessaoInvalida8(){
+		facade.getFonteDeSons(null);
+	}
+	
+	//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	
+	@Test(expected = SessaoInexistenteException.class)
+	public void testaSessaoInexistente1() throws LoginInvalidoException, SessaoInexistenteException, UsuarioInexistenteException {
+		facade.seguirUsuario("xpto", "Joao.Silva");	
+	}
+	
+	@Test(expected = SessaoInexistenteException.class)
+	public void testaSessaoInexistente2() throws SessaoInexistenteException{
+		facade.getListaDeSeguidores("xpto");	
+	}
+		
+	@Test(expected = SessaoInexistenteException.class)
+	public void testaSessaoInexistente3() throws SessaoInexistenteException{
+		facade.getNumeroDeSeguidores("xpto");
+	}
+	
+	@Test(expected = SessaoInexistenteException.class)
+	public void testaSessaoInexistente4() throws SessaoInexistenteException{
+		facade.getFonteDeSons("xpto");	
+	}
+	
+	//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+	@Test(expected = DataDeCriacaoInvalidaException.class)
+	public void testaDataDeCriacaoInvalida1() throws LoginInvalidoException, UsuarioInexistenteException, DiaInvalidoException, MesInvalidoException, SessaoInexistenteException, NumberFormatException, AnoInvalidoException, SomInvalidoException, DataDeCriacaoInvalidaException{
+		int idSessao = facade.abrirSessao("Joao.Silva", "joao123");
+		facade.postarSom(idSessao,"http://www.youtube.com/watch?v=r-fIOrUTIOQ", "20/12/2012");
+	}
+	
+	@Test(expected = DataDeCriacaoInvalidaException.class)
+	public void testaDataDeCriacaoInvalida2() throws DiaInvalidoException, MesInvalidoException, SessaoInexistenteException, LoginInvalidoException, UsuarioInexistenteException, NumberFormatException, AnoInvalidoException, SomInvalidoException, DataDeCriacaoInvalidaException{
+		int idSessao = facade.abrirSessao("Joao.Silva", "joao123");
+		facade.postarSom(idSessao,"http://www.youtube.com/watch?v=r-fIOrUTIOQ", "12/30/2012");
+	}
+	
+	@Test(expected = DataDeCriacaoInvalidaException.class)
+	public void testaDataDeCriacaoInvalida3() throws LoginInvalidoException, UsuarioInexistenteException, DiaInvalidoException, MesInvalidoException, SessaoInexistenteException, NumberFormatException, AnoInvalidoException, SomInvalidoException, DataDeCriacaoInvalidaException{
+		int idSessao = facade.abrirSessao("Joao.Silva", "joao123");
+		facade.postarSom(idSessao,"http://www.youtube.com/watch?v=r-fIOrUTIOQ", "32/11/2012");
+	}
+	
+	@Test(expected = DataDeCriacaoInvalidaException.class)
+	public void testaDataDeCriacaoInvalida4() throws LoginInvalidoException, UsuarioInexistenteException, DiaInvalidoException, MesInvalidoException, SessaoInexistenteException, NumberFormatException, AnoInvalidoException, SomInvalidoException, DataDeCriacaoInvalidaException{
+		int idSessao = facade.abrirSessao("Joao.Silva", "joao123");
+		facade.postarSom(idSessao,"http://www.youtube.com/watch?v=r-fIOrUTIOQ", "29/02/2015");
+	}
+	
+	@Test(expected = DataDeCriacaoInvalidaException.class)
+	public void testaDataDeCriacaoInvalida5() throws LoginInvalidoException, UsuarioInexistenteException, DiaInvalidoException, MesInvalidoException, SessaoInexistenteException, NumberFormatException, AnoInvalidoException, SomInvalidoException, DataDeCriacaoInvalidaException{
+		int idSessao = facade.abrirSessao("Joao.Silva", "joao123");
+		facade.postarSom(idSessao,"http://www.youtube.com/watch?v=r-fIOrUTIOQ", "31/04/2015");
+	}
+	
+	@Test(expected = DataDeCriacaoInvalidaException.class)
+	public void testaDataDeCriacaoInvalida6() throws LoginInvalidoException, UsuarioInexistenteException, DiaInvalidoException, MesInvalidoException, SessaoInexistenteException, NumberFormatException, AnoInvalidoException, SomInvalidoException, DataDeCriacaoInvalidaException{
+		int idSessao = facade.abrirSessao("Joao.Silva", "joao123");
+		facade.postarSom(idSessao,"http://www.youtube.com/watch?v=r-fIOrUTIOQ", "30/04/15");
+	}
+	
+	}

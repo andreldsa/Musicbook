@@ -1,0 +1,183 @@
+# User Story 04 - Favoritando um som
+
+#    Usuario pode favoritar um determinado som no sistema.
+#    O usuario tem uma lista de sons favoritos, que devem aparecer
+# como uma pilha comum, de acordo com a ordem de insercao.
+#    Os usuarios que seguem um usuario podem visualizar
+# os sons que este ultimo favoritou, em um feed extra 
+# em suas paginas pessoais no sistema, o feed extra deve
+# obedecer a estrutura de uma pilha, obedecendo a ordem
+# cronologica de entrada.
+
+# limpar os dados do sistema
+zerarSistema
+
+# entradas válidas
+
+criarUsuario login="mark" senha="m@rk" nome="Mark Zuckerberg" email="mark@facebook.com"
+criarUsuario login="steve" senha="5t3v3" nome="Steven Paul Jobs" email="jobs@apple.com"
+criarUsuario login="bill" senha="severino" nome="William Henry Gates III" email="billzin@msn.com"
+criarUsuario login="larry" senha="p4G6" nome="Larry Page" email="larry@gmail.com"
+criarUsuario login="sergey" senha="3R1n" nome="Sergey Brin" email="brin@gmail.com"
+
+# o método 'abrirSessao' retorna o ID da sessão
+sessaoMark=abrirSessao login="mark" senha="m@rk"
+sessaoSteve=abrirSessao login="steve" senha="5t3v3"
+sessaoBill=abrirSessao login="bill" senha="severino"
+sessaoLarry=abrirSessao login="larry" senha="p4G6"
+sessaoSergey=abrirSessao login="sergey" senha="3R1n"
+
+# o metodo getIDUsuario retorna o id do usuario no sistema
+IDSteve=getIDUsuario idSessao=${sessaoSteve}
+IDMark=getIDUsuario idSessao=${sessaoMark}
+IDBill=getIDUsuario idSessao=${sessaoBill}
+IDLarry=getIDUsuario idSessao=${sessaoLarry}
+IDSergey=getIDUsuario idSessao=${sessaoSergey}
+
+# verifica perfil musical
+expect {} getPerfilMusical idSessao=${sessaoMark} 
+expect {} getPerfilMusical idSessao=${sessaoSteve}
+expect {} getPerfilMusical idSessao=${sessaoBill}
+expect {} getPerfilMusical idSessao=${sessaoLarry}
+expect {} getPerfilMusical idSessao=${sessaoSergey}
+
+# Mark posta sons
+som1ID=postarSom idSessao=${sessaoMark} link="http://letras.mus.br/david-guetta/#mais-acessadas/1944260" dataCriacao="30/12/2013"
+som2ID=postarSom idSessao=${sessaoMark} link="https://letras.mus.br/david-guetta/#mais-acessadas/2150148" dataCriacao="31/12/2013"
+
+# Steve posta sons
+som3ID=postarSom idSessao=${sessaoSteve} link="http://www.youtube.com/watch?v=3KsPIJK17uk" dataCriacao="01/01/2014"
+som4ID=postarSom idSessao=${sessaoSteve} link="https://www.youtube.com/watch?v=JRfuAukYTKg" dataCriacao="31/12/2015"
+som5ID=postarSom idSessao=${sessaoSteve} link="http://www.youtube.com/watch?v=PVzljDmoPVs" dataCriacao="04/02/2016"
+
+# Larry posta sons
+som6ID=postarSom idSessao=${sessaoLarry} link="http://www.youtube.com/watch?v=PVzljDmoPVs" dataCriacao="04/02/2016"
+
+# Sergey posta sons
+som7ID=postarSom idSessao=${sessaoSergey} link="http://www.youtube.com/watch?v=PVzljDmoPVs" dataCriacao="04/02/2016"
+
+expect {${som2ID},${som1ID}} getPerfilMusical idSessao=${sessaoMark}
+expect {${som5ID},${som4ID},${som3ID}} getPerfilMusical idSessao=${sessaoSteve} 
+expect {${som6ID}} getPerfilMusical idSessao=${sessaoLarry}
+expect {${som7ID}} getPerfilMusical idSessao=${sessaoSergey}
+
+expect {} getSonsFavoritos idSessao=${sessaoSteve}
+expect {} getSonsFavoritos idSessao=${sessaoMark}
+expect {} getSonsFavoritos idSessao=${sessaoBill}
+expect {} getSonsFavoritos idSessao=${sessaoLarry}
+expect {} getSonsFavoritos idSessao=${sessaoSergey}
+
+expect {} getFeedExtra idSessao=${sessaoBill}
+expect {} getFeedExtra idSessao=${sessaoMark}
+expect {} getFeedExtra idSessao=${sessaoSteve}
+expect {} getFeedExtra idSessao=${sessaoLarry}
+expect {} getFeedExtra idSessao=${sessaoSergey}
+
+# ------------------------------------------------------------------------------------------------------------------------------------------
+
+# Bill resolve seguir Steve
+seguirUsuario idSessao=${sessaoBill} login="steve"
+
+# Steve resolve seguir Mark
+seguirUsuario idSessao=${sessaoSteve} login="mark"
+
+# Bill resolve seguir Mark
+seguirUsuario idSessao=${sessaoBill} login="mark"
+
+# ------------------------------------------------------------------------------------------------------------------------------------------
+
+# Bill favorita o som2ID, que eh de Mark
+favoritarSom idSessao=${sessaoBill} idSom=${som2ID}
+
+# Bill favorita o som3ID, que eh de Steve
+favoritarSom idSessao=${sessaoBill} idSom=${som3ID}
+
+# os dois sons favoritados por Bill aparecem na sua lista de sons favoritos
+expect {${som3ID},${som2ID}} getSonsFavoritos idSessao=${sessaoBill}
+
+# a lista de favoritos de Mark e Steve estao inalteradas
+expect {} getSonsFavoritos idSessao=${sessaoMark}
+expect {} getSonsFavoritos idSessao=${sessaoSteve}
+
+# assim como seus feeds extras
+expect {} getFeedExtra idSessao=${sessaoMark}
+expect {} getFeedExtra idSessao=${sessaoSteve}
+
+# ---------------------------------------------------------------------------------------------------------------------------------------------
+
+# Steve favorita o som2ID, que eh de Mark, e Bill fica sabendo instantaneamente no seu feed extra
+favoritarSom idSessao=${sessaoSteve} idSom=${som2ID}
+
+expect {${som2ID}} getSonsFavoritos idSessao=${sessaoSteve}
+
+expect {${som2ID}} getFeedExtra idSessao=${sessaoBill}
+
+# ------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Mark favorita o som5ID, que eh de Steve, e Bill e Steve ficam sabendo instantaneamente nos seus feeds extras
+favoritarSom idSessao=${sessaoMark} idSom=${som5ID}
+
+expect {${som5ID}} getSonsFavoritos idSessao=${sessaoMark}
+
+expect {${som5ID},${som2ID}} getFeedExtra idSessao=${sessaoBill}
+expect {${som5ID}} getFeedExtra idSessao=${sessaoSteve}
+
+# ------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Mark favorita o som2ID, que eh dele mesmo, e Bill e Steve ficam sabendo instantaneamente nos seus feeds extras
+favoritarSom idSessao=${sessaoMark} idSom=${som2ID}
+
+expect {${som2ID},${som5ID}} getSonsFavoritos idSessao=${sessaoMark}
+
+expect {${som2ID},${som5ID},${som2ID}} getFeedExtra idSessao=${sessaoBill}
+expect {${som2ID},${som5ID}} getFeedExtra idSessao=${sessaoSteve}
+
+# os feeds extras e os favoritos dos demais usuarios ficam inalterados
+expect {} getFeedExtra idSessao=${sessaoLarry}
+expect {} getFeedExtra idSessao=${sessaoSergey}
+
+expect {} getSonsFavoritos idSessao=${sessaoSergey}
+expect {} getSonsFavoritos idSessao=${sessaoLarry}
+
+# o feed extra de Mark nao muda
+expect {} getFeedExtra idSessao=${sessaoMark}
+
+# ------------------------------------------------------------------------------------------------------------------------------------------------
+
+#Encerrar a sessao de Bill
+encerrarSessao login="bill"
+
+#Encerrar a sessao de Sergey
+encerrarSessao login="sergey"
+
+# -----------------------------------------------------------------------------------------------------------------------------------------------
+
+# entradas inválidas
+
+expectError "Sessão inválida" favoritarSom idSessao= idSom=${som1ID}
+expectError "Sessão inválida" favoritarSom idSessao="" idSom=${som2ID}
+expectError "Sessão inexistente" favoritarSom idSessao=${sessaoBill} idSom=${som2ID}
+expectError "Som inválido" favoritarSom idSessao=${sessaoSteve} idSom=
+expectError "Som inválido" favoritarSom idSessao=${sessaoSteve} idSom=""
+expectError "Som inválido" favoritarSom idSessao=${sessaoSteve} idSom=${som8ID}
+
+expectError "Sessão inválida" getSonsFavoritos idSessao=
+expectError "Sessão inválida" getSonsFavoritos idSessao=""
+expectError "Sessão inexistente" getSonsFavoritos idSessao=${sessaoSergey} 
+
+expectError "Sessão inválida" getFeedExtra idSessao=
+expectError "Sessão inválida" getFeedExtra idSessao=""
+expectError "Sessão inexistente" getFeedExtra idSessao=${sessaoBill}
+
+#Encerrar a sessao de Mark
+encerrarSessao login="mark"
+
+#Encerrar a sessao de Steve
+encerrarSessao login="steve"
+
+#Encerrar a sessao de Larry
+encerrarSessao login="larry"
+
+encerrarSistema
+quit
+

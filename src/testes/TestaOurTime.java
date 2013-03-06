@@ -99,17 +99,17 @@ public class TestaOurTime {
 	
 	@Test(expected = AnoInvalidoException.class)
 	public void testaAnoInvalido2() throws DiaInvalidoException, MesInvalidoException{
-		data1 = new OurTime(12,4,12,16,34,45);
+		data1 = new OurTime(12,4,15,16,34,45);
 	}
 	
 	@Test(expected = AnoInvalidoException.class)
 	public void testaAnoInvalido3() throws DiaInvalidoException, MesInvalidoException, AnoInvalidoException{
-		data1 = new OurTime(13,4,11);
+		data1 = new OurTime(13,4,-2033);
 	}
 
 	@Test(expected = AnoInvalidoException.class)
 	public void testaAnoInvalido4() throws DiaInvalidoException, MesInvalidoException{
-		data1 = new OurTime(13,4,12,16,34,45);
+		data1 = new OurTime(13,4,-2014,16,34,45);
 	}
 	
 	
@@ -151,7 +151,7 @@ public class TestaOurTime {
 	
 	@Test
 	public void testaMinuto() {
-		assertEquals(18, data2.getMinuto());
+		assertEquals(20, data2.getMinuto());
 		
 		int minutoAtual = new GregorianCalendar().get(GregorianCalendar.MINUTE);	
 		assertEquals(minutoAtual, data3.getMinuto());	
@@ -182,14 +182,15 @@ public class TestaOurTime {
 	public void testaDataToString(){
 		assertEquals("20/05/1982", data1.getDataToString());
 		assertEquals("25/03/1995", data2.getDataToString());
-		//fica 25/1/2013 , sem o 0 do mes
-		/*StringBuilder dataAtual = new StringBuilder();
+		StringBuilder dataAtual = new StringBuilder();
 		dataAtual.append(new GregorianCalendar().get(GregorianCalendar.DAY_OF_MONTH));
 		dataAtual.append("/");
+		if(new GregorianCalendar().get(GregorianCalendar.MONTH) < 10)
+			dataAtual.append("0");
 		dataAtual.append(new GregorianCalendar().get(GregorianCalendar.MONTH));
 		dataAtual.append("/");
 		dataAtual.append(new GregorianCalendar().get(GregorianCalendar.YEAR));
-		assertEquals(dataAtual.toString(), data3.getDataToString());	*/
+		assertEquals(dataAtual.toString(), data3.getDataToString());	
 		
 	}
 	

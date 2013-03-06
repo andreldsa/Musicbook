@@ -1,0 +1,247 @@
+# User Story 05 - Visualizando o feed principal e mudando sua regra de composicao
+
+#    Usuario pode visualizar seu feed principal, o qual deve
+# obedecer a estrutura de uma pilha comum. No feed principal
+# aparecerao os sons postados pelas fontes de sons do usuario.
+#    O usuario pode modificar a regra de composicao do feed principal,
+# optando entre tres regras, sendo a primeira a default:
+#
+# 1. PRIMEIRO OS SONS POSTADOS MAIS RECENTEMENTE PELAS FONTES DE SONS
+# 2. PRIMEIRO OS SONS COM MAIS FAVORITOS
+# 3. PRIMEIRO SONS DE FONTES DAS QUAIS FAVORITEI SONS NO PASSADO
+
+# Explicacao de cada regra:
+# 1. deverao aparecer primeiro no feed principal do usuario apenas os sons
+#    postados pelas suas fontes de sons mais recentemente.
+# 2. deverao aparecer primeiro os sons postados pelas suas fontes, os quais
+#    estarao ordenados pelo numero de favoritos que recebeu de todos
+#    os usuarios do sistema. Quando dois sons tem o mesmo numero de favoritos,
+#    a ordem de entrada na pilha eh preservada.
+# 3. deverao aparecer primeiro os sons postados pelas suas fontes, os quais
+#    estarao ordenados segundo o numero de sons favoritados pelo proprio usuario de cada
+#    fonte de sons isoladamente. Quando duas fontes tem o mesmo numero de favoritos,
+#    a ordem de entrada da lista de quem o usuario estah seguindo eh levada em consideracao
+#    aqui para reordenar o feed principal, de maneira que os sons do usuario que o proprio usuario
+#    comecou a seguir antes de seguir outro, aparecerao primeiro que os deste outro.
+
+# limpar os dados do sistema
+zerarSistema
+
+# rules
+#rule1="PRIMEIRO OS SONS POSTADOS MAIS RECENTEMENTE PELAS FONTES DE SONS"
+rule1=getFirstCompositionRule
+expect "PRIMEIRO OS SONS POSTADOS MAIS RECENTEMENTE PELAS FONTES DE SONS" getFirstCompositionRule
+
+#rule2="PRIMEIRO OS SONS COM MAIS FAVORITOS"
+rule2=getSecondCompositionRule
+expect "PRIMEIRO OS SONS COM MAIS FAVORITOS" getSecondCompositionRule
+
+#rule3="PRIMEIRO SONS DE FONTES DAS QUAIS FAVORITEI SONS NO PASSADO"
+rule3=getThirdCompositionRule
+expect "PRIMEIRO SONS DE FONTES DAS QUAIS FAVORITEI SONS NO PASSADO" getThirdCompositionRule
+
+# entradas válidas
+
+criarUsuario login="mark" senha="m@rk" nome="Mark Zuckerberg" email="mark@facebook.com"
+criarUsuario login="steve" senha="5t3v3" nome="Steven Paul Jobs" email="jobs@apple.com"
+criarUsuario login="bill" senha="severino" nome="William Henry Gates III" email="billzin@msn.com"
+criarUsuario login="larry" senha="p4G6" nome="Larry Page" email="larry@gmail.com"
+criarUsuario login="sergey" senha="3R1n" nome="Sergey Brin" email="brin@gmail.com"
+
+# o método 'abrirSessao' retorna o ID da sessão
+sessaoMark=abrirSessao login="mark" senha="m@rk"
+sessaoSteve=abrirSessao login="steve" senha="5t3v3"
+sessaoBill=abrirSessao login="bill" senha="severino"
+sessaoLarry=abrirSessao login="larry" senha="p4G6"
+sessaoSergey=abrirSessao login="sergey" senha="3R1n"
+
+# o metodo getIDUsuario retorna o id do usuario no sistema
+IDSteve=getIDUsuario idSessao=${sessaoSteve}
+IDMark=getIDUsuario idSessao=${sessaoMark}
+IDBill=getIDUsuario idSessao=${sessaoBill}
+IDLarry=getIDUsuario idSessao=${sessaoLarry}
+IDSergey=getIDUsuario idSessao=${sessaoSergey}
+
+# verifica perfil musical
+expect {} getPerfilMusical idSessao=${sessaoMark} 
+expect {} getPerfilMusical idSessao=${sessaoSteve}
+expect {} getPerfilMusical idSessao=${sessaoBill}
+expect {} getPerfilMusical idSessao=${sessaoLarry}
+expect {} getPerfilMusical idSessao=${sessaoSergey}
+
+expect {} getMainFeed idSessao=${sessaoBill}
+expect {} getMainFeed idSessao=${sessaoMark}
+expect {} getMainFeed idSessao=${sessaoSteve}
+expect {} getMainFeed idSessao=${sessaoLarry}
+expect {} getMainFeed idSessao=${sessaoSergey}
+
+# ------------------------------------------------------------------------------------------------------------------------------------------
+
+# Bill resolve seguir Steve
+seguirUsuario idSessao=${sessaoBill} login="steve"
+
+# Steve resolve seguir Mark
+seguirUsuario idSessao=${sessaoSteve} login="mark"
+
+# Bill resolve seguir Mark
+seguirUsuario idSessao=${sessaoBill} login="mark"
+
+# Mark resolve seguir Larry
+seguirUsuario idSessao=${sessaoMark} login="larry"
+
+# Larry resolver seguir Sergey
+seguirUsuario idSessao=${sessaoLarry} login="sergey"
+
+# --------------------------------------------------------------------------------------------------------------------------------------------
+
+# Mark posta sons
+som1ID=postarSom idSessao=${sessaoMark} link="http://letras.mus.br/david-guetta/#mais-acessadas/1944260" dataCriacao="30/12/2013"
+som2ID=postarSom idSessao=${sessaoMark} link="https://letras.mus.br/david-guetta/#mais-acessadas/2150148" dataCriacao="31/12/2013"
+
+# Steve posta sons
+som3ID=postarSom idSessao=${sessaoSteve} link="http://www.youtube.com/watch?v=3KsPIJK17uk" dataCriacao="01/01/2014"
+som4ID=postarSom idSessao=${sessaoSteve} link="https://www.youtube.com/watch?v=JRfuAukYTKg" dataCriacao="31/12/2015"
+som5ID=postarSom idSessao=${sessaoSteve} link="http://www.youtube.com/watch?v=PVzljDmoPVs" dataCriacao="04/02/2016"
+
+# Larry posta sons
+som6ID=postarSom idSessao=${sessaoLarry} link="http://www.youtube.com/watch?v=PVzljDmoPVs" dataCriacao="04/02/2016"
+
+# Sergey posta sons
+som7ID=postarSom idSessao=${sessaoSergey} link="http://www.youtube.com/watch?v=PVzljDmoPVs" dataCriacao="04/02/2016"
+
+# Steve posta o som8ID
+som8ID=postarSom idSessao=${sessaoSteve} link="http://www.youtube.com/watch?v=3KsPIJK17uk" dataCriacao="28/12/2013"
+
+# perfis musicais
+expect {${som2ID},${som1ID}} getPerfilMusical idSessao=${sessaoMark}
+expect {${som8ID},${som5ID},${som4ID},${som3ID}} getPerfilMusical idSessao=${sessaoSteve} 
+expect {${som6ID}} getPerfilMusical idSessao=${sessaoLarry}
+expect {${som7ID}} getPerfilMusical idSessao=${sessaoSergey}
+
+# --------------------------------------------------------------------------------------------------------------------------------------------
+
+# 1. deverao aparecer primeiro no feed principal do usuario apenas os sons
+#    postados pelas suas fontes de sons mais recentemente.
+
+# feeds principais
+expect {${som8ID},${som5ID},${som4ID},${som3ID},${som2ID},${som1ID}} getMainFeed idSessao=${sessaoBill}
+expect {${som6ID}} getMainFeed idSessao=${sessaoMark}
+expect {${som2ID},${som1ID}} getMainFeed idSessao=${sessaoSteve}
+expect {${som7ID}} getMainFeed idSessao=${sessaoLarry}
+expect {} getMainFeed idSessao=${sessaoSergey}
+
+# ------------------------------------------------------------------------------------------------------------------------------------------
+
+# 2. deverao aparecer primeiro os sons postados pelas suas fontes, os quais
+#    estarao ordenados pelo numero de favoritos que recebeu de todos
+#    os usuarios do sistema. Quando dois sons tem o mesmo numero de favoritos,
+#    a ordem de entrada da pilha eh preservada.
+
+favoritarSom idSessao=${sessaoMark} idSom=${som2ID}
+favoritarSom idSessao=${sessaoSteve} idSom=${som1ID}
+favoritarSom idSessao=${sessaoSergey} idSom=${som4ID}
+favoritarSom idSessao=${sessaoSteve} idSom=${som5ID}
+favoritarSom idSessao=${sessaoLarry} idSom=${som5ID}
+favoritarSom idSessao=${sessaoLarry} idSom=${som1ID}
+favoritarSom idSessao=${sessaoSergey} idSom=${som1ID}
+
+# trocando a regra de composicao
+setMainFeedRule idSessao=${sessaoBill} rule=${rule2}
+expect {${som1ID},${som5ID},${som4ID},${som2ID},${som8ID},${som3ID}} getMainFeed idSessao=${sessaoBill}
+
+setMainFeedRule idSessao=${sessaoSteve} rule=${rule2}
+expect {${som1ID},${som2ID}} getMainFeed idSessao=${sessaoSteve}
+
+setMainFeedRule idSessao=${sessaoMark} rule=${rule2}
+expect {${som6ID}} getMainFeed idSessao=${sessaoMark}
+
+# demais feeds principais
+expect {${som7ID}} getMainFeed idSessao=${sessaoLarry}
+expect {} getMainFeed idSessao=${sessaoSergey}
+
+# ------------------------------------------------------------------------------------------------------------------------------------------------
+
+# 3. deverao aparecer primeiro os sons postados pelas suas fontes, os quais
+#    estarao ordenados segundo o numero de sons favoritados pelo proprio usuario de cada
+#    fonte de sons isoladamente. Quando duas fontes tem o mesmo numero de favoritos,
+#    a ordem de entrada da lista de quem o usuario estah seguindo eh levada em consideracao
+#    aqui para reordenar o feed principal, de maneira que os sons do usuario que o proprio usuario
+#    comecou a seguir antes de seguir outro, aparecerao primeiro que os deste outro.
+
+favoritarSom idSessao=${sessaoBill} idSom=${som2ID}
+favoritarSom idSessao=${sessaoSteve} idSom=${som1ID}
+favoritarSom idSessao=${sessaoBill} idSom=${som4ID}
+favoritarSom idSessao=${sessaoBill} idSom=${som5ID}
+favoritarSom idSessao=${sessaoLarry} idSom=${som5ID}
+favoritarSom idSessao=${sessaoBill} idSom=${som1ID}
+favoritarSom idSessao=${sessaoSergey} idSom=${som1ID}
+
+# trocando a regra de composicao
+setMainFeedRule idSessao=${sessaoBill} rule=${rule3}
+
+expect {${som2ID},${som1ID},${som8ID},${som5ID},${som4ID},${som3ID}} getMainFeed idSessao=${sessaoBill}
+
+setMainFeedRule idSessao=${sessaoSteve} rule=${rule3}
+expect {${som1ID},${som2ID}} getMainFeed idSessao=${sessaoSteve}
+
+setMainFeedRule idSessao=${sessaoMark} rule=${rule3}
+expect {${som6ID}} getMainFeed idSessao=${sessaoMark}
+
+# demais feeds principais
+expect {${som7ID}} getMainFeed idSessao=${sessaoLarry}
+expect {} getMainFeed idSessao=${sessaoSergey}
+
+# ------------------------------------------------------------------------------------------------------------------------------------------------
+
+# 1. deverao aparecer primeiro no feed principal do usuario apenas os sons
+#    postados pelas suas fontes de sons mais recentemente.
+
+# trocando a regra de composicao
+setMainFeedRule idSessao=${sessaoBill} rule=${rule1}
+expect {${som8ID},${som5ID},${som4ID},${som3ID},${som2ID},${som1ID}} getMainFeed idSessao=${sessaoBill}
+
+setMainFeedRule idSessao=${sessaoSteve} rule=${rule1}
+expect {${som2ID},${som1ID}} getMainFeed idSessao=${sessaoSteve}
+
+setMainFeedRule idSessao=${sessaoMark} rule=${rule1}
+expect {${som6ID}} getMainFeed idSessao=${sessaoMark}
+
+# demais feeds principais
+expect {${som7ID}} getMainFeed idSessao=${sessaoLarry}
+expect {} getMainFeed idSessao=${sessaoSergey}
+
+# ------------------------------------------------------------------------------------------------------------------------------------------------
+
+#Encerrar a sessao de Bill
+encerrarSessao login="bill"
+
+#Encerrar a sessao de Sergey
+encerrarSessao login="sergey"
+
+# -----------------------------------------------------------------------------------------------------------------------------------------------
+
+# entradas inválidas
+
+expectError "Sessão inválida" getMainFeed idSessao=
+expectError "Sessão inválida" getMainFeed idSessao=""
+expectError "Sessão inexistente" getMainFeed idSessao=${sessaoBill}
+
+expectError "Sessão inválida" setMainFeedRule idSessao= rule=""
+expectError "Sessão inválida" setMainFeedRule idSessao="" rule=""
+expectError "Sessão inexistente" setMainFeedRule idSessao=${sessaoSergey} rule=""
+expectError "Regra de composição inválida" setMainFeedRule idSessao=${sessaoMark} rule=
+expectError "Regra de composição inválida" setMainFeedRule idSessao=${sessaoMark} rule=""
+expectError "Regra de composição inexistente" setMainFeedRule idSessao=${sessaoMark} rule="xpto"
+
+#Encerrar a sessao de Mark
+encerrarSessao login="mark"
+
+#Encerrar a sessao de Steve
+encerrarSessao login="steve"
+
+#Encerrar a sessao de Larry
+encerrarSessao login="larry"
+
+encerrarSistema
+quit
+

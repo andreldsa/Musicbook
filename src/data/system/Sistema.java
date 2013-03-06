@@ -1,9 +1,6 @@
 package data.system;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -12,16 +9,10 @@ import data.user.Conta;
 import data.user.ContaBasica;
 import data.user.Usuario;
 import data.util.OurTime;
-import data.util.SolicitacaoDeAmizade;
 import exceptions.system.DataDeCriacaoInvalidaException;
 import exceptions.system.SessaoInexistenteException;
-import exceptions.system.SolicitacaoInexistenteException;
-import exceptions.system.SolicitacaoInvalidaException;
 import exceptions.system.SomInvalidoException;
 import exceptions.system.UsuarioInexistenteException;
-import exceptions.time.AnoInvalidoException;
-import exceptions.time.DiaInvalidoException;
-import exceptions.time.MesInvalidoException;
 import exceptions.user.EmailInvalidoException;
 import exceptions.user.EmailJaExisteException;
 import exceptions.user.LoginInvalidoException;
@@ -115,7 +106,7 @@ public class Sistema {
 	 * @param idSessao o id da sessao do usuario	
 	 * @param link o link do som a ser postado
 	 * @param dataCriacao a data de criacao do sim
-	 * @return
+	 * @return ID do Som
 	 * @throws SessaoInexistenteException
 	 * @throws SomInvalidoException
 	 * @throws DataDeCriacaoInvalidaException
@@ -256,6 +247,16 @@ public class Sistema {
 		this.sessionCounter = 0;
 		this.userCounter = 0;
 		this.soundCounter = 0;
+	}
+
+	/**
+	 * Retorna uma lista contendo os ids dos sons da visão de sons do usuario que representado pelo id de sessao passado
+	 * @param idSessao ID da sessao do usuario
+	 * @return Lista dos Sons da Visao de Sons
+	 */
+	public List<Integer> getVisaoDosSons(int idSessao) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 

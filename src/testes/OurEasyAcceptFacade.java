@@ -42,12 +42,18 @@ public class OurEasyAcceptFacade {
 		return null;
 	}
 	
+	public int postarSom(String idSessao, String link, String dataCriacao){
+		//TODO
+		return -1;
+	}
+	
 	public int postarSom(int idSessao, String link, String dataCriacao){
 		//TODO
 		return -1;
 	}
 	
-	public String getAtributoSom(int idSom, String atributo){
+	
+	public String getAtributoSom(String idSom, String atributo){
 		if(atributo == DATACRIACAO){
 			//TODO
 		}
@@ -55,19 +61,23 @@ public class OurEasyAcceptFacade {
 		return null;
 	}
 
-	public int enviarSolicitacaoAmizade(String idSessao, String login) {
+	public int seguirUsuario(String idSessao, String login) {
 		// TODO Auto-generated method stub
 		return -1;
 	}
 
-	public void aceitarSolicitacaoAmizade(String idSessao, String idSolicitacao) {
+	public List<Integer> getListaDeSeguidores(String idSessao) {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
-	
 
-	
-	
-	
+	public int getNumeroDeSeguidores(String idSessao) {
+		// TODO Auto-generated method stub
+		return -1;
+	}
 
+	public List<Integer> getFonteDeSons(String idSessao) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
