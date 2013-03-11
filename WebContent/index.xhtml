@@ -1,0 +1,49 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<link rel="StyleSheet" type="text/css" href="layout/style.css"
+		media="screen" />
+	<meta charset="utf-8" />
+
+	<ui:include src="#{main.getPage('header')}" />
+
+	<h:body styleClass="body">
+		<div id="wrapper_index">
+		<h:panelGrid styleClass="login">
+			<h:form>
+				<h:outputText value="Sign in" />
+				<h:panelGrid columns="2" cellspacing="10">
+					<h:outputText value="Login:" />
+					<p:inputText size="40" value="#{login.login}" />
+					<h:outputText value="Senha:" />
+					<p:password size="40" value="#{login.senha}" />
+				</h:panelGrid>
+				<h:commandButton styleClass="button" value="Entrar"
+					action="#{login.efetuaLogin()}" />
+				<p:growl id="growl" showDetail="true" sticky="true" />
+			</h:form>
+		</h:panelGrid>
+		<h:panelGrid styleClass="cadastro">
+			<h:form>
+				<h:outputText value="Novo no Musicbook? Cadastre-se" />
+				<h:panelGrid columns="2" cellspacing="10">
+					<h:outputText value="Nome:" />
+					<p:inputText size="40" value="#{cdUsuario.nome}" />
+					<h:outputText value="Email:" />
+					<p:inputText size="40" value="#{cdUsuario.email}" />
+					<h:outputText value="Login:" />
+					<p:inputText size="40" value="#{cdUsuario.login}" />
+					<h:outputText value="Senha:" />
+					<p:password size="40" value="#{cdUsuario.senha}" />
+				</h:panelGrid>
+				<h:commandButton styleClass="button" value="Cadastrar-se"
+					action="#{cdUsuario.novoCadastro()}" />
+				<p:growl id="growl" life="400" />
+			</h:form>
+		</h:panelGrid>
+		</div>
+	</h:body>
+	<ui:include src="#{main.getPage('footer')}" />
+</html>

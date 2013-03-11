@@ -1,0 +1,48 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets" 
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+	
+	<ui:include src="#{main.getPage('header')}"/>
+	
+	<h:body styleClass="body">
+		<div id="wrapper">
+			<div id="dadosUsuario">
+				<h:panelGrid columns="2" >
+					<p:graphicImage value="#{perfil.imagemPerfil}"/>
+				<h:column>
+					<h:form>
+						<p:growl id="growl" showDetail="true" sticky="true" />
+						<div id="dados_usuario">
+							<b>Nome:</b>
+							<h:outputText value="#{perfil.usuario.nome}"/>
+							<br/>
+							<h:commandButton action="#{perfil.seguir()}" value="Seguir" 
+								styleClass="button" title="Seguir esse usuário"/>
+						</div>
+					</h:form>
+				</h:column>
+				</h:panelGrid>
+			</div>
+			<p:dataTable value="#{perfil.visaoDeSons()}" var="som">
+				<p:column style="width:4%;" headerText="ID">
+					<h:outputText value="#{som.getID()}"/>
+				</p:column>
+				<p:column headerText="Som">
+					<h:outputText value="#{som.getLink()}"/>
+				</p:column>
+				<p:column style="width:10%;" headerText="Data">
+					<h:outputText value="#{som.getDataCriacao().getDataToString()}"/>
+				</p:column>
+				<p:column style="width:4%;">
+					<p:commandButton id="btFavorita" action="#{perfil.favoritaSom(som)}" 
+						icon="ui-icon-star"	title="Favoritar Som"/>
+				</p:column>
+			</p:dataTable>
+		</div>
+	</h:body>
+	
+	<ui:include src="#{main.getPage('footer')}" />
+	
+</html>
