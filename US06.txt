@@ -1,0 +1,144 @@
+# User Story 06 - Criando listas de usuarios
+
+#    Usuario pode criar listas de usuarios
+# e pode acessar apenas os sons daquela lista.
+#    Os sons dos usuarios na lista devem aparecer
+# empilhados em ordem cronologica.
+
+# limpar os dados do sistema
+zerarSistema
+
+# entradas válidas
+
+criarUsuario login="mark" senha="m@rk" nome="Mark Zuckerberg" email="mark@facebook.com"
+criarUsuario login="steve" senha="5t3v3" nome="Steven Paul Jobs" email="jobs@apple.com"
+criarUsuario login="bill" senha="severino" nome="William Henry Gates III" email="billzin@msn.com"
+criarUsuario login="larry" senha="p4G6" nome="Larry Page" email="larry@gmail.com"
+criarUsuario login="sergey" senha="3R1n" nome="Sergey Brin" email="brin@gmail.com"
+
+# o método 'abrirSessao' retorna o ID da sessão
+sessaoMark=abrirSessao login="mark" senha="m@rk"
+sessaoSteve=abrirSessao login="steve" senha="5t3v3"
+sessaoBill=abrirSessao login="bill" senha="severino"
+sessaoLarry=abrirSessao login="larry" senha="p4G6"
+sessaoSergey=abrirSessao login="sergey" senha="3R1n"
+
+# o metodo getIDUsuario retorna o id do usuario no sistema
+IDSteve=getIDUsuario idSessao=${sessaoSteve}
+IDMark=getIDUsuario idSessao=${sessaoMark}
+IDBill=getIDUsuario idSessao=${sessaoBill}
+IDLarry=getIDUsuario idSessao=${sessaoLarry}
+IDSergey=getIDUsuario idSessao=${sessaoSergey}
+
+# verifica perfil musical
+expect {} getPerfilMusical idSessao=${sessaoMark} 
+expect {} getPerfilMusical idSessao=${sessaoSteve}
+expect {} getPerfilMusical idSessao=${sessaoBill}
+expect {} getPerfilMusical idSessao=${sessaoLarry}
+expect {} getPerfilMusical idSessao=${sessaoSergey}
+
+# Mark posta sons
+som1ID=postarSom idSessao=${sessaoMark} link="http://letras.mus.br/david-guetta/#mais-acessadas/1944260" dataCriacao="30/12/2013"
+som2ID=postarSom idSessao=${sessaoMark} link="https://letras.mus.br/david-guetta/#mais-acessadas/2150148" dataCriacao="31/12/2013"
+
+# Steve posta sons
+som3ID=postarSom idSessao=${sessaoSteve} link="http://www.youtube.com/watch?v=3KsPIJK17uk" dataCriacao="01/01/2014"
+som4ID=postarSom idSessao=${sessaoSteve} link="https://www.youtube.com/watch?v=JRfuAukYTKg" dataCriacao="31/12/2015"
+som5ID=postarSom idSessao=${sessaoSteve} link="http://www.youtube.com/watch?v=PVzljDmoPVs" dataCriacao="04/02/2016"
+
+# Larry posta sons
+som6ID=postarSom idSessao=${sessaoLarry} link="http://www.youtube.com/watch?v=PVzljDmoPVs" dataCriacao="04/02/2016"
+
+# Sergey posta sons
+som7ID=postarSom idSessao=${sessaoSergey} link="http://www.youtube.com/watch?v=PVzljDmoPVs" dataCriacao="04/02/2016"
+
+# Steve posta o som8ID
+som8ID=postarSom idSessao=${sessaoSteve} link="http://www.youtube.com/watch?v=3KsPIJK17uk" dataCriacao="28/12/2016"
+
+# perfis musicais
+expect {${som2ID},${som1ID}} getPerfilMusical idSessao=${sessaoMark}
+expect {${som8ID},${som5ID},${som4ID},${som3ID}} getPerfilMusical idSessao=${sessaoSteve} 
+expect {${som6ID}} getPerfilMusical idSessao=${sessaoLarry}
+expect {${som7ID}} getPerfilMusical idSessao=${sessaoSergey}
+
+#---------------------------------------------------------------------------------------------------------------------------------
+
+idLista1=criarLista idSessao=${sessaoMark} nome="listaMark1" 
+
+adicionarUsuario idSessao=${sessaoMark} idLista=${idLista1} idUsuario=${IDSteve}
+adicionarUsuario idSessao=${sessaoMark} idLista=${idLista1} idUsuario=${IDBill}
+adicionarUsuario idSessao=${sessaoMark} idLista=${idLista1} idUsuario=${IDLarry}
+
+expect {${som6ID},${som8ID},${som5ID},${som4ID},${som3ID}} getSonsEmLista idSessao=${sessaoMark} idLista=${idLista1}
+
+#----------------------------------------------------------------------------------------------------------------------------------
+
+idListaGoogle=criarLista idSessao=${sessaoMark} nome="listaGoogle" 
+
+adicionarUsuario idSessao=${sessaoMark} idLista=${idListaGoogle} idUsuario=${IDLarry}
+adicionarUsuario idSessao=${sessaoMark} idLista=${idListaGoogle} idUsuario=${IDBill}
+adicionarUsuario idSessao=${sessaoMark} idLista=${idListaGoogle} idUsuario=${IDSergey}
+
+expect {${som7ID},${som6ID}} getSonsEmLista idSessao=${sessaoMark} idLista=${idListaGoogle}
+
+#----------------------------------------------------------------------------------------------------------------------------------
+
+idListaFace=criarLista idSessao=${sessaoBill} nome="listaFacebook" 
+
+adicionarUsuario idSessao=${sessaoBill} idLista=${idListaFace} idUsuario=${IDMark}
+
+expect {${som2ID},${som1ID}} getSonsEmLista idSessao=${sessaoBill} idLista=${idListaFace}
+
+#----------------------------------------------------------------------------------------------------------------------------------
+
+#Encerrar a sessao de Bill
+encerrarSessao login="bill"
+
+#Encerrar a sessao de Sergey
+encerrarSessao login="sergey"
+
+#----------------------------------------------------------------------------------------------------------------------------------
+
+# entradas inválidas
+
+expectError "Sessão inválida" criarLista idSessao= nome=
+expectError "Sessão inválida" criarLista idSessao="" nome=
+expectError "Sessão inexistente" criarLista idSessao=${sessaoBill} nome=
+
+expectError "Nome inválido" criarLista idSessao=${sessaoSteve} nome=
+expectError "Nome inválido" criarLista idSessao=${sessaoSteve} nome=""
+expectError "Nome já escolhido" criarLista idSessao=${sessaoMark} nome="listaMark1"
+
+expectError "Sessão inválida" adicionarUsuario idSessao= idLista=${idLista1} idUsuario=${IDSteve}
+expectError "Sessão inválida" adicionarUsuario idSessao="" idLista=${idLista1} idUsuario=${IDSteve}
+expectError "Sessão inexistente" adicionarUsuario idSessao=${sessaoSergey} idLista=${idLista1} idUsuario=${IDSteve}
+
+expectError "Lista inválida" adicionarUsuario idSessao=${sessaoMark} idLista= idUsuario=${IDSteve}
+expectError "Lista inválida" adicionarUsuario idSessao=${sessaoMark} idLista="" idUsuario=${IDSteve}
+expectError "Lista inválida" adicionarUsuario idSessao=${sessaoMark} idLista=${idLista10} idUsuario=${IDSteve}
+
+expectError "Usuário inválido" adicionarUsuario idSessao=${sessaoMark} idLista= idUsuario=
+expectError "Usuário inválido" adicionarUsuario idSessao=${sessaoMark} idLista="" idUsuario=
+expectError "Usuário inválido" adicionarUsuario idSessao=${sessaoMark} idLista=${idLista1} idUsuario=${IDDavidFilo}
+expectError "Usuário não pode adicionar-se a própria lista" adicionarUsuario idSessao=${sessaoMark} idLista=${idLista1} idUsuario=${IDMark}
+expectError "Usuário já existe nesta lista" adicionarUsuario idSessao=${sessaoMark} idLista=${idLista1} idUsuario=${IDSteve}
+
+expectError "Sessão inválida" getSonsEmLista idSessao= idLista=${idLista1}
+expectError "Sessão inválida" getSonsEmLista idSessao="" idLista=${idLista1}
+expectError "Sessão inexistente" getSonsEmLista idSessao=${sessaoSergey} idLista=${idLista1}
+
+expectError "Lista inválida" getSonsEmLista idSessao=${sessaoLarry} idLista=
+expectError "Lista inválida" getSonsEmLista idSessao=${sessaoLarry} idLista=""
+expectError "Lista inválida" getSonsEmLista idSessao=${sessaoLarry} idLista=${idLista10}
+
+#Encerrar a sessao de Mark
+encerrarSessao login="mark"
+
+#Encerrar a sessao de Steve
+encerrarSessao login="steve"
+
+#Encerrar a sessao de Larry
+encerrarSessao login="larry"
+
+encerrarSistema
+quit

@@ -1,0 +1,267 @@
+# User Story 07 - Recomendando fonte de sons
+
+#    O sistema recomenda fontes de sons ao
+# usuario, de acordo com quantidade de sons 
+# favoritados em comum + quantidade de fontes
+# de som em comum.
+#    As fontes recomendadas nao devem estar
+# entre as fontes já existentes.
+#    Caso o primeiro criterio resulte em empate
+# se coloca na frente a fonte que seja mais favoritado
+# pelo usuario. 
+#    Caso o empate persista, deve se colocar
+# em ordem alfabetica segundo o nome do usuario.
+#    Caso o usuario nao tenha nenhuma fonte de som
+# nem tenha nenhum favorito, o sistema deve recomendar
+# as fontes que mais tem sons favoritados.
+#    Usuarios sem favoritos nem fontes de sons, nao devem
+# ser recomendados.
+
+# limpar os dados do sistema
+zerarSistema
+
+# entradas válidas
+
+criarUsuario login="mark" senha="m@rk" nome="Mark Zuckerberg" email="mark@facebook.com"
+criarUsuario login="steve" senha="5t3v3" nome="Steven Paul Jobs" email="jobs@apple.com"
+criarUsuario login="bill" senha="severino" nome="William Henry Gates III" email="billzin@msn.com"
+criarUsuario login="larry" senha="p4G6" nome="Larry Page" email="larry@gmail.com"
+criarUsuario login="sergey" senha="3R1n" nome="Sergey Brin" email="brin@gmail.com"
+criarUsuario login="filo" senha="f11o" nome"David Filo" email="filo@yahoo.com"
+
+# o método 'abrirSessao' retorna o ID da sessão
+sessaoMark=abrirSessao login="mark" senha="m@rk"
+sessaoSteve=abrirSessao login="steve" senha="5t3v3"
+sessaoBill=abrirSessao login="bill" senha="severino"
+sessaoLarry=abrirSessao login="larry" senha="p4G6"
+sessaoSergey=abrirSessao login="sergey" senha="3R1n"
+sessaoFilo=abrirSessao login="filo" senha="f11o"
+
+# o metodo getIDUsuario retorna o id do usuario no sistema
+IDSteve=getIDUsuario idSessao=${sessaoSteve}
+IDMark=getIDUsuario idSessao=${sessaoMark}
+IDBill=getIDUsuario idSessao=${sessaoBill}
+IDLarry=getIDUsuario idSessao=${sessaoLarry}
+IDSergey=getIDUsuario idSessao=${sessaoSergey}
+IDFilo=getIDUsuario idSessao=${sessaoFilo}
+
+# verifica perfil musical
+expect {} getPerfilMusical idSessao=${sessaoMark} 
+expect {} getPerfilMusical idSessao=${sessaoSteve}
+expect {} getPerfilMusical idSessao=${sessaoBill}
+expect {} getPerfilMusical idSessao=${sessaoLarry}
+expect {} getPerfilMusical idSessao=${sessaoSergey}
+expect {} getPerfilMusical idSessao=${sessaoFilo}
+
+# Mark posta sons
+som1ID=postarSom idSessao=${sessaoMark} link="http://letras.mus.br/david-guetta/#mais-acessadas/1944260" dataCriacao="30/12/2013"
+som2ID=postarSom idSessao=${sessaoMark} link="https://letras.mus.br/david-guetta/#mais-acessadas/2150148" dataCriacao="31/12/2013"
+
+# Steve posta sons
+som3ID=postarSom idSessao=${sessaoSteve} link="http://www.youtube.com/watch?v=3KsPIJK17uk" dataCriacao="01/01/2014"
+som4ID=postarSom idSessao=${sessaoSteve} link="https://www.youtube.com/watch?v=JRfuAukYTKg" dataCriacao="31/12/2015"
+som5ID=postarSom idSessao=${sessaoSteve} link="http://www.youtube.com/watch?v=PVzljDmoPVs" dataCriacao="04/02/2016"
+
+# Larry posta sons
+som6ID=postarSom idSessao=${sessaoLarry} link="http://www.youtube.com/watch?v=PVzljDmoPVs" dataCriacao="04/02/2016"
+
+# Sergey posta sons
+som7ID=postarSom idSessao=${sessaoSergey} link="http://www.youtube.com/watch?v=PVzljDmoPVs" dataCriacao="04/02/2016"
+
+# Steve posta o som8ID
+som8ID=postarSom idSessao=${sessaoSteve} link="http://www.youtube.com/watch?v=3KsPIJK17uk" dataCriacao="28/12/2016"
+
+# perfis musicais
+expect {${som2ID},${som1ID}} getPerfilMusical idSessao=${sessaoMark}
+expect {${som8ID},${som5ID},${som4ID},${som3ID}} getPerfilMusical idSessao=${sessaoSteve} 
+expect {${som6ID}} getPerfilMusical idSessao=${sessaoLarry}
+expect {${som7ID}} getPerfilMusical idSessao=${sessaoSergey}
+
+# sons favoritos
+expect {} getSonsFavoritos idSessao=${sessaoSteve}
+expect {} getSonsFavoritos idSessao=${sessaoMark}
+expect {} getSonsFavoritos idSessao=${sessaoBill}
+expect {} getSonsFavoritos idSessao=${sessaoLarry}
+expect {} getSonsFavoritos idSessao=${sessaoSergey}
+expect {} getSonsFavoritos idSessao=${sessaoFilo}
+
+#----------------------------------------------------------------------------------------------------------------------------------
+
+# favoritos
+
+# Bill favorita o som2ID
+favoritarSom idSessao=${sessaoBill} idSom=${som2ID}
+
+# Bill favorita o som3ID
+favoritarSom idSessao=${sessaoBill} idSom=${som3ID}
+
+# Larry favorita o som2ID
+favoritarSom idSessao=${sessaoLarry} idSom=${som2ID}
+
+# Larry favorita o som3ID
+favoritarSom idSessao=${sessaoLarry} idSom=${som3ID}
+
+# Steve favorita o som2ID
+favoritarSom idSessao=${sessaoSteve} idSom=${som2ID}
+
+# Mark favorita o som5ID
+favoritarSom idSessao=${sessaoMark} idSom=${som5ID}
+
+# Mark favorita o som2ID
+favoritarSom idSessao=${sessaoMark} idSom=${som2ID}
+
+# Mark favorita o som3ID
+favoritarSom idSessao=${sessaoMark} idSom=${som3ID}
+
+# Sergey favorita o som5ID
+favoritarSom idSessao=${sessaoSergey} idSom=${som5ID}
+
+# Sergey favorita o som2ID
+favoritarSom idSessao=${sessaoSergey} idSom=${som2ID}
+
+# Sergey favorita o som3ID
+favoritarSom idSessao=${sessaoSergey} idSom=${som3ID}
+
+#----------------------------------------------------------------------------------------------------------------------------------
+
+# fontes de sons
+
+# Bill resolve seguir Steve
+seguirUsuario idSessao=${sessaoBill} login="steve" 
+
+# Steve resolve seguir Mark
+seguirUsuario idSessao=${sessaoSteve} login="mark" 
+
+# Bill resolve seguir Mark
+seguirUsuario idSessao=${sessaoBill} login="mark"
+
+#----------------------------------------------------------------------------------------------------------------------------------
+
+# recomendacoes para bill
+
+expect 2 getNumFavoritosEmComum idSessao=${sessaoBill} idUsuario=${IDMark}
+expect 0 getNumFontesEmComum idSessao=${sessaoBill} idUsuario=${IDMark}  
+
+expect 1 getNumFavoritosEmComum idSessao=${sessaoBill} idUsuario=${IDSteve}
+expect 1 getNumFontesEmComum idSessao=${sessaoBill} idUsuario=${IDSteve}
+
+expect 2 getNumFavoritosEmComum idSessao=${sessaoBill} idUsuario=${IDSergey}
+expect 0 getNumFontesEmComum idSessao=${sessaoBill} idUsuario=${IDSergey}
+
+expect 2 getNumFavoritosEmComum idSessao=${sessaoBill} idUsuario=${IDLarry}
+expect 0 getNumFontesEmComum idSessao=${sessaoBill} idUsuario=${IDLarry}
+
+expect 0 getNumFavoritosEmComum idSessao=${sessaoBill} idUsuario=${IDFilo}
+expect 0 getNumFontesEmComum idSessao=${sessaoBill} idUsuario=${IDFilo}
+
+expect {${IDLarry},${IDSergey}} getFontesDeSonsRecomendadas idSessao=${sessaoBill}
+
+#----------------------------------------------------------------------------------------------------------------------------------
+
+# recomendacoes para steve
+
+expect 1 getNumFavoritosEmComum idSessao=${sessaoSteve} idUsuario=${IDBill}
+expect 1 getNumFontesEmComum idSessao=${sessaoSteve} idUsuario=${IDBill}
+
+expect 1 getNumFavoritosEmComum idSessao=${sessaoSteve} idUsuario=${IDMark}
+expect 0 getNumFontesEmComum idSessao=${sessaoSteve} idUsuario=${IDMark}
+
+expect 1 getNumFavoritosEmComum idSessao=${sessaoSteve} idUsuario=${IDSergey}
+expect 0 getNumFontesEmComum idSessao=${sessaoSteve} idUsuario=${IDSergey}
+
+expect 1 getNumFavoritosEmComum idSessao=${sessaoSteve} idUsuario=${IDLarry}
+expect 0 getNumFontesEmComum idSessao=${sessaoSteve} idUsuario=${IDLarry}
+
+expect 0 getNumFavoritosEmComum idSessao=${sessaoSteve} idUsuario=${IDFilo}
+expect 0 getNumFontesEmComum idSessao=${sessaoSteve} idUsuario=${IDFilo}
+
+expect {${IDBill},${IDLarry},${IDSergey}} getFontesDeSonsRecomendadas idSessao=${sessaoSteve}
+
+#----------------------------------------------------------------------------------------------------------------------------------
+
+# recomendacoes para mark
+
+expect 3 getNumFavoritosEmComum idSessao=${sessaoMark} idUsuario=${IDSergey}
+expect 0 getNumFontesEmComum idSessao=${sessaoMark} idUsuario=${IDSergey}
+
+expect 2 getNumFavoritosEmComum idSessao=${sessaoMark} idUsuario=${IDLarry}
+expect 0 getNumFontesEmComum idSessao=${sessaoMark} idUsuario=${IDLarry}
+
+expect 0 getNumFavoritosEmComum idSessao=${sessaoMark} idUsuario=${IDFilo}
+expect 0 getNumFontesEmComum idSessao=${sessaoMark} idUsuario=${IDFilo}
+
+expect {${IDSergey},${IDLarry},${IDBill},${IDSteve}} getFontesDeSonsRecomendadas idSessao=${sessaoMark}
+
+#----------------------------------------------------------------------------------------------------------------------------------
+
+# recomendacoes para sergey
+
+expect 2 getNumFavoritosEmComum idSessao=${sessaoSergey} idUsuario=${IDLarry}
+expect 0 getNumFontesEmComum idSessao=${sessaoSergey} idUsuario=${IDLarry}
+
+expect 0 getNumFavoritosEmComum idSessao=${sessaoSergey} idUsuario=${IDFilo}
+expect 0 getNumFontesEmComum idSessao=${sessaoSergey} idUsuario=${IDFilo}
+
+expect {${IDMark},${IDLarry},${IDBill},${IDSteve}} getFontesDeSonsRecomendadas idSessao=${sessaoSergey}
+
+#----------------------------------------------------------------------------------------------------------------------------------
+
+# recomendacoes para larry
+
+expect 0 getNumFavoritosEmComum idSessao=${sessaoLarry} idUsuario=${IDFilo}
+expect 0 getNumFontesEmComum idSessao=${sessaoLarry} idUsuario=${IDFilo}
+
+expect {${IDMark},${IDSergey},${IDBill},${IDSteve}} getFontesDeSonsRecomendadas idSessao=${sessaoLarry}
+
+#----------------------------------------------------------------------------------------------------------------------------------
+
+# recomendacoes para filo
+
+expect {${IDSteve},${IDMark}} getFontesDeSonsRecomendadas idSessao=${sessaoFilo}
+
+#----------------------------------------------------------------------------------------------------------------------------------
+
+#Encerrar a sessao de Bill
+encerrarSessao login="bill"
+
+#Encerrar a sessao de Sergey
+encerrarSessao login="sergey"
+
+#----------------------------------------------------------------------------------------------------------------------------------
+
+# entradas inválidas
+
+expectError "Sessão inválida" getNumFavoritosEmComum idSessao= idUsuario=
+expectError "Sessão inválida" getNumFavoritosEmComum idSessao="" idUsuario=
+expectError "Sessão inexistente" getNumFavoritosEmComum idSessao=${sessaoBill} idUsuario=${IDFilo}
+
+expectError "Usuário inválido" getNumFavoritosEmComum idSessao=${sessaoSteve} idUsuario=
+expectError "Usuário inválido" getNumFavoritosEmComum idSessao=${sessaoSteve} idUsuario=""
+expectError "Usuário inválido" getNumFavoritosEmComum idSessao=${sessaoSteve} idUsuario=${IDYang}
+
+expectError "Sessão inválida" getNumFontesEmComum idSessao= idUsuario=
+expectError "Sessão inválida" getNumFontesEmComum idSessao="" idUsuario=
+expectError "Sessão inexistente" getNumFontesEmComum idSessao=${sessaoBill} idUsuario=${IDFilo}
+
+expectError "Usuário inválido" getNumFontesEmComum idSessao=${sessaoSteve} idUsuario=
+expectError "Usuário inválido" getNumFontesEmComum idSessao=${sessaoSteve} idUsuario=""
+expectError "Usuário inválido" getNumFontesEmComum idSessao=${sessaoSteve} idUsuario=${IDYang}
+
+expectError "Sessão inválida" getFontesDeSonsRecomendadas idSessao=
+expectError "Sessão inválida" getFontesDeSonsRecomendadas idSessao=""
+expectError "Sessão inválida" getFontesDeSonsRecomendadas idSessao=${sessaoYang}
+
+#Encerrar a sessao de Mark
+encerrarSessao login="mark"
+
+#Encerrar a sessao de Steve
+encerrarSessao login="steve"
+
+#Encerrar a sessao de Larry
+encerrarSessao login="larry"
+
+#Encerrar a sessao de Filo
+encerrarSessao login="filo"
+
+encerrarSistema
+quit
