@@ -1,0 +1,41 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets" 
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+	
+	<ui:include src="#{main.getPage('header')}"/>
+	
+	<h:body styleClass="body">
+		<p:growl id="growl" showDetail="true" sticky="true" />
+		<div id="wrapper">
+			<div id="title_bar">Sons em Lista</div>
+			<p:dataTable value="#{listas.getSonsEmLista()}" var="som">
+				<p:column style="width:4%;" headerText="ID">
+					<h:outputText value="#{som.getID()}"/>
+				</p:column>
+				<p:column headerText="Som">
+					<h:outputText value="#{som.getLink()}"/>
+				</p:column>
+				<p:column style="width:10%;" headerText="Data">
+					<h:outputText value="#{som.getDataCriacao().getDataToString()}"/>
+				</p:column>
+				<p:column style="width:4%;">
+					<p:commandButton id="btFavorita" action="#{perfil.favoritaSom(som)}" 
+						icon="ui-icon-star"	title="Favoritar Som"/>
+				</p:column>
+			</p:dataTable>
+			<div id="title_bar">Nova Lista de Usuarios</div>
+			<h:form>
+				<h:panelGrid columns="2">
+					<h:inputText value="#{listas.nomeLista}"/>
+					<h:commandButton styleClass="button" value="Cria Lista"
+						action="#{listas.criaLista()}"/>
+				</h:panelGrid>
+			</h:form>
+		</div>
+	</h:body>
+	
+	<ui:include src="#{main.getPage('footer')}" />
+	
+</html>
